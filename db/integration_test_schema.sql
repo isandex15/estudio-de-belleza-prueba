@@ -8,6 +8,13 @@ CREATE DATABASE IF NOT EXISTS seguridad
     CHARACTER SET utf8mb4
     COLLATE utf8mb4_unicode_ci;
 
+ALTER DATABASE sac
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+ALTER DATABASE seguridad
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_unicode_ci;
+
 USE seguridad;
 
 CREATE TABLE IF NOT EXISTS usuario (
