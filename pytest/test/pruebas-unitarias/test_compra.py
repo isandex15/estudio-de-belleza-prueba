@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 
 import admin.config.conexion as conexion_module
 from admin.modelo.compra import CompraModelo
+from admin.modelo.inicio import InicioModelo
 
 
 @pytest.fixture
@@ -145,6 +146,60 @@ def test_registrar_compra(monkeypatch, modelo_compra):
             None,
         ),
     )
+
+
+def test_editar_compra_actualiza_productos_en_orden(modelo_compra):
+    mock_conn = modelo_compra.conexion
+    mock_cursor = MagicMock()
+    mock_cursor.fetchall.return_value = [(8, 2), (3, 1)]
+    mock_conn.cursor.return_value = mock_cursor
+    modelo_compra.fecha_compra = "2026-10-27"
+    modelo_compra.total = 33
+    modelo_compra.cod_proveedor = 5
+    modelo_compra.status = 1
+
+    resultado = modelo_compra.editar(
+        12,
+        [
+            {"cod_producto": 9, "cantidad": 3, "precio": 11},
+            {"cod_producto": 2, "cantidad": 1, "precio": 7},
+        ],
+    )
+
+    assert resultado == 1
+    actualizaciones_stock = [
+        llamada.args[1]
+        for llamada in mock_cursor.execute.call_args_list
+        if "UPDATE producto" in llamada.args[0]
+    ]
+    assert actualizaciones_stock == [(1, 3), (2, 8), (1, 2), (3, 9)]
+    assert "ORDER BY cod_producto" in mock_cursor.execute.call_args_list[0].args[0]
+
+
+def test_registrar_reserva_ordena_productos_y_cantidades(monkeypatch):
+    fake_conn = MagicMock()
+    fake_conn.cursor.return_value.stored_results.return_value = []
+    monkeypatch.setattr(
+        conexion_module.mysql.connector,
+        "connect",
+        lambda **kwargs: fake_conn,
+    )
+    modelo = InicioModelo()
+
+    modelo.registrarReserva(
+        "V-12345678-9",
+        [1],
+        "2026-10-27",
+        "10:00",
+        "V-98765432-1",
+        cod_productos=[
+            {"cod_producto": "9", "cantidad": 4},
+            {"cod_producto": "2", "cantidad": 1},
+        ],
+    )
+
+    argumentos = fake_conn.cursor.return_value.callproc.call_args.args[1]
+    assert argumentos[6:8] == ("2,9", "1,4")
 
 
 

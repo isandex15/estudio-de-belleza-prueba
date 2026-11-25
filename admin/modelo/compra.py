@@ -483,8 +483,12 @@ class CompraModelo(Conexion):
                 SELECT cod_producto, cantidad
                 FROM detalle_compra
                 WHERE cod_compra = %s
+                ORDER BY cod_producto
             """, (cod_compra,))
-            detalle_actual = cursor.fetchall()
+            detalle_actual = sorted(
+                cursor.fetchall(),
+                key=lambda item: item[0]
+            )
 
             for item in detalle_actual:
                 cursor.execute("""
@@ -513,10 +517,10 @@ class CompraModelo(Conexion):
                 cod_compra
             ))
 
-            for p in productos:
-                if not p:
-                    continue
-
+            for p in sorted(
+                (producto for producto in productos if producto),
+                key=lambda producto: int(producto.get("cod_producto", 0) or 0)
+            ):
                 cod_producto = int(p.get("cod_producto", 0) or 0)
                 cantidad = int(p.get("cantidad", 0) or 0)
                 precio = float(p.get("precio", 0) or 0)

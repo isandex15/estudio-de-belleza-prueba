@@ -280,7 +280,10 @@ BEGIN
     DECLARE v_cantidad INT;
     DECLARE v_fin INT DEFAULT 0;
     DECLARE v_detalles CURSOR FOR
-        SELECT cod_producto, cantidad FROM detalle_compra WHERE cod_compra = p_cod_compra;
+        SELECT cod_producto, cantidad
+        FROM detalle_compra
+        WHERE cod_compra = p_cod_compra
+        ORDER BY cod_producto;
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_fin = 1;
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN

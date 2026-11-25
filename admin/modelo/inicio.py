@@ -341,6 +341,10 @@ class InicioModelo(Conexion):
             cantidades = None
 
             if cod_productos:
+                cod_productos = sorted(
+                    cod_productos,
+                    key=lambda producto: int(producto["cod_producto"])
+                )
                 productos = ",".join(
                     str(producto["cod_producto"])
                     for producto in cod_productos
