@@ -13,6 +13,27 @@ jobs:
     name: Pruebas de integración
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASS: ci-root-password
+      DB_NAME: sac
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ci-root-password
+          MYSQL_ROOT_HOST: "%"
+          MYSQL_DATABASE: sac
+        ports:
+          - 3306:3306
+        volumes:
+          - ${{ github.workspace }}/db/integration_test_schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+          - ${{ github.workspace }}/db/procedimientoscompras.sql:/docker-entrypoint-initdb.d/02-procedimientos.sql
+        options: >-
+          --health-cmd="mysqladmin ping --host=127.0.0.1 --user=root --password=$$MYSQL_ROOT_PASSWORD --silent"
+          --health-interval=10s --health-timeout=5s --health-retries=10
 
     steps:
       - name: Descargar código
