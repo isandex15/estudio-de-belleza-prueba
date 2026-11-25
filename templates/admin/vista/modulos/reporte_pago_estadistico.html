@@ -1,0 +1,577 @@
+<div id="main">
+ 
+    <div class="page-heading">
+
+        <div class="page-title">
+
+            <div class="row align-items-center">
+
+                <div class="col-12 col-md-8">
+
+                    <h3 class="fw-bold mb-1">
+                        <i class="bi bi-bar-chart-line-fill me-2"></i>
+                        Reporte Estadístico de Pagos
+                    </h3>
+
+                    <p class="text-muted">Análisis de pagos con métricas y gráficos.</p>
+
+
+                </div>
+
+                <div class="col-12 col-md-4 d-flex justify-content-md-end mt-3 mt-md-0">
+
+                    <a href="/admin?ruta=reporte_pago" class="btn btn-primary btn-sm rounded-3 px-3" title="Volver">
+                        <i class="bi bi-arrow-left me-1"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    <section class="section">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between flex-wrap gap-2 align-items-center">
+                <div class="d-flex gap-2 align-items-center">
+                    <form id="formPDF" action="/admin?ruta=reporte_pago_estadistico" method="post" target="_blank"
+                        class="d-flex gap-2">
+                        <input type="hidden" name="pdf" value="1">
+                        <input type="hidden" name="desde" id="pdf_desde" value="{{ filtros.desde }}">
+                        <input type="hidden" name="hasta" id="pdf_hasta" value="{{ filtros.hasta }}">
+                        <input type="hidden" name="cod_tipo_pago" id="pdf_cod_tipo_pago"
+                            value="{{ filtros.cod_tipo_pago }}">
+                        <input type="hidden" name="status" id="pdf_status" value="{{ filtros.status }}">
+                        <input type="hidden" name="cedula_especialista" id="pdf_cedula_especialista"
+                            value="{{ filtros.cedula_especialista }}">
+                        <input type="hidden" name="cedula_cliente" id="pdf_cedula_cliente"
+                            value="{{ filtros.cedula_cliente }}">
+                        <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-file-earmark-pdf"></i>
+                            Generar PDF</button>
+                    </form>
+                    <form id="formExcel" action="/admin?ruta=reporte_pago_estadistico" method="post"
+                        class="d-flex gap-2">
+                        <input type="hidden" name="excel" value="1">
+                        <input type="hidden" name="desde" id="excel_desde" value="{{ filtros.desde }}">
+                        <input type="hidden" name="hasta" id="excel_hasta" value="{{ filtros.hasta }}">
+                        <input type="hidden" name="cod_tipo_pago" id="excel_cod_tipo_pago"
+                            value="{{ filtros.cod_tipo_pago }}">
+                        <input type="hidden" name="status" id="excel_status" value="{{ filtros.status }}">
+                        <input type="hidden" name="cedula_especialista" id="excel_cedula_especialista"
+                            value="{{ filtros.cedula_especialista }}">
+                        <input type="hidden" name="cedula_cliente" id="excel_cedula_cliente"
+                            value="{{ filtros.cedula_cliente }}">
+                        <button type="submit" class="btn btn-success btn-sm"><i class="bi bi-file-earmark-excel"></i>
+                            Generar Excel</button>
+                    </form>
+                </div>
+                <button id="btnLimpiar" type="button" class="btn btn-secondary btn-sm">Limpiar</button>
+            </div>
+
+            <div class="card-body">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-12 col-lg-6">
+                                <form action="/admin?ruta=reporte_pago_estadistico" method="post" target="_blank"
+                                    class="row g-2 align-items-end">
+                                    <input type="hidden" name="pdf_especialista" value="1">
+                                    <input type="hidden" name="desde" value="{{ filtros.desde }}">
+                                    <input type="hidden" name="hasta" value="{{ filtros.hasta }}">
+                                    <input type="hidden" name="cod_tipo_pago" value="{{ filtros.cod_tipo_pago }}">
+                                    <input type="hidden" name="status" value="{{ filtros.status }}">
+                                    <input type="hidden" name="cedula_cliente" value="">
+                                    <div class="col-12">
+                                        <label for="reporte_especialista" class="form-label">
+                                            <i class="bi bi-person-badge me-1"></i>Especialista
+                                        </label>
+                                        <select id="reporte_especialista" name="cedula_especialista" class="form-select"
+                                            required>
+                                            <option value="0">Seleccione un especialista</option>
+                                            {% for especialista in especialistas %}
+                                            <option value="{{ especialista.cedula_especialista }}">
+                                                {{ especialista.nombre_especialista }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-danger w-100">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i>PDF del especialista
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <form action="/admin?ruta=reporte_pago_estadistico" method="post" target="_blank"
+                                    class="row g-2 align-items-end">
+                                    <input type="hidden" name="pdf" value="1">
+                                    <input type="hidden" name="desde" value="{{ filtros.desde }}">
+                                    <input type="hidden" name="hasta" value="{{ filtros.hasta }}">
+                                    <input type="hidden" name="cod_tipo_pago" value="{{ filtros.cod_tipo_pago }}">
+                                    <input type="hidden" name="status" value="{{ filtros.status }}">
+                                    <input type="hidden" name="cedula_especialista" value="0">
+                                    <div class="col-12">
+                                        <label for="reporte_cliente" class="form-label">
+                                            <i class="bi bi-person me-1"></i>Cliente
+                                        </label>
+                                        <select id="reporte_cliente" name="cedula_cliente" class="form-select" required>
+                                            <option value="">Seleccione un cliente</option>
+                                            {% for cliente in clientes %}
+                                            <option value="{{ cliente.cedula }}">
+                                                {{ cliente.nombre_cliente }} - {{ cliente.cedula }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-12">
+                                        <button type="submit" class="btn btn-danger w-100">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i>PDF del cliente
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="formFiltros" method="get" action="/admin" class="row g-3 mb-4">
+                    <input type="hidden" name="ruta" value="reporte_pago_estadistico">
+                    <div class="col-12 col-md-2">
+                        <label for="desde" class="form-label">Desde</label>
+                        <input id="desde" name="desde" type="date" class="form-control form-control-sm"
+                            value="{{ filtros.desde }}">
+                    </div>
+                    <div class="col-12 col-md-2">
+                        <label for="hasta" class="form-label">Hasta</label>
+                        <input id="hasta" name="hasta" type="date" class="form-control form-control-sm"
+                            value="{{ filtros.hasta }}">
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label for="cod_tipo_pago" class="form-label">Tipo de Pago</label>
+                        <select id="cod_tipo_pago" name="cod_tipo_pago" class="form-select form-select-sm">
+                            <option value="0" {% if filtros.cod_tipo_pago==0 %}selected{% endif %}>Todos</option>
+                            {% for tipo in tipopagos %}
+                            <option value="{{ tipo.cod_tipo_pago }}" {% if tipo.cod_tipo_pago==filtros.cod_tipo_pago
+                                %}selected{% endif %}>{{ tipo.nombre_tipo_pago }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label for="status" class="form-label">Estado</label>
+                        <select id="status" name="status" class="form-select form-select-sm">
+                            <option value="all" {% if filtros.status=='all' %}selected{% endif %}>Todos</option>
+                            <option value="active" {% if filtros.status=='active' %}selected{% endif %}>Activos</option>
+                            <option value="anulado" {% if filtros.status=='anulado' %}selected{% endif %}>Anulados
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label for="cedula_especialista" class="form-label">Especialista</label>
+                        <select id="cedula_especialista" name="cedula_especialista" class="form-select form-select-sm">
+                            <option value="0" {% if filtros.cedula_especialista==0 %}selected{% endif %}>Todos</option>
+                            {% for especialista in especialistas %}
+                            <option value="{{ especialista.cedula_especialista }}" {% if
+                                especialista.cedula_especialista==filtros.cedula_especialista %}selected{% endif %}>{{
+                                especialista.nombre_especialista }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-3">
+                        <label for="cedula_cliente" class="form-label">Cliente</label>
+                        <select id="cedula_cliente" name="cedula_cliente" class="form-select form-select-sm">
+                            <option value="" {% if not filtros.cedula_cliente %}selected{% endif %}>Todos</option>
+                            {% for cliente in clientes %}
+                            <option value="{{ cliente.cedula }}" {% if
+                                cliente.cedula|string==filtros.cedula_cliente|string %}selected{% endif %}>{{
+                                cliente.nombre_cliente }} - {{ cliente.cedula }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-12 col-md-2 d-flex align-items-end gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                    </div>
+                </form>
+
+                {% if filtros.cedula_especialista or filtros.cedula_cliente %}
+                <div class="alert alert-info py-2" role="status">
+                    <strong>Filtro aplicado:</strong>
+                    {% if filtros.cedula_especialista %}
+                    especialista seleccionado
+                    {% endif %}
+                    {% if filtros.cedula_especialista and filtros.cedula_cliente %} y {% endif %}
+                    {% if not filtros.cedula_cliente %}
+                    cliente seleccionado
+                    {% endif %}
+                    {% if estadisticas.total_pagos == 0 %}
+                    <span>No hay pagos registrados con esta combinación de filtros.</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                <div class="row gy-3">
+                    {% if filtros.cedula_especialista %}
+                    <div class="col-12">
+                        <div class="card stats-card p-3 border-primary">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stats-icon bg-primary"><i class="bi bi-person-badge"></i></div>
+                                <div>
+                                    <div class="mini-title">Ganancia del especialista en el período seleccionado</div>
+                                    <div class="counter">{{ "%.2f"|format(estadisticas.ingresos_totales) }}</div>
+                                    <small class="text-muted">Elige desde y hasta para consultar un mes
+                                        específico.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="col-12 col-lg-6">
+                        <div class="card stats-card p-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stats-icon bg-primary"><i class="bi bi-wallet2"></i></div>
+                                <div>
+                                    <div class="mini-title">Ingresos del periodo</div>
+                                    <div class="counter">{{ "%.2f"|format(estadisticas.ingresos_totales) }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="card stats-card p-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stats-icon bg-success"><i class="bi bi-cash-stack"></i></div>
+                                <div>
+                                    <div class="mini-title">Total de pagos</div>
+                                    <div class="counter">{{ estadisticas.total_pagos }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not filtros.cedula_cliente %}
+                    <div class="col-12 col-lg-6">
+                        <div class="card stats-card p-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stats-icon bg-warning"><i class="bi bi-graph-up"></i></div>
+                                <div>
+                                    <div class="mini-title">Promedio por pago</div>
+                                    <div class="counter">{{ "%.2f"|format(estadisticas.pago_promedio) }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="col-12 col-lg-6">
+                        <div class="card stats-card p-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="stats-icon bg-danger"><i class="bi bi-x-circle"></i></div>
+                                <div>
+                                    <div class="mini-title">Pagos anulados</div>
+                                    <div class="counter">{{ estadisticas.pagos_anulados }} / {{
+                                        "%.2f"|format(estadisticas.tasa_cancelacion) }}%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12 col-xl-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Rendimiento por especialista</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Especialista</th>
+                                                <th class="text-end">Pagos</th>
+                                                <th class="text-end">Ingresos</th>
+                                                <th class="text-end">Periodo</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for especialista in estadisticas.ingresos_por_especialista %}
+                                            <tr>
+                                                <td>{{ especialista.nombre_especialista }}</td>
+                                                <td class="text-end">{{ especialista.total_pagos }}</td>
+                                                <td class="text-end">{{ "%.2f"|format(especialista.ingresos) }}</td>
+                                                <td class="text-end">{{ especialista.fecha_inicio }} <br> {{
+                                                    especialista.fecha_fin }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% if estadisticas.ingresos_por_especialista|length == 0 %}
+                                            <tr>
+                                                <td colspan="4" class="text-center">Sin datos</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>{% if filtros.cedula_especialista %}Ganancia del especialista por mes{% else
+                                    %}Ingreso y cancelaciones por especialista y mes{% endif %}</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Especialista</th>
+                                                <th>Periodo</th>
+                                                <th class="text-end">Pagos</th>
+                                                <th class="text-end">Ingresos</th>
+                                                <th class="text-end">Cancelados</th>
+                                                <th class="text-end">% cancel.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in estadisticas.resumen_especialista_mes %}
+                                            <tr>
+                                                <td>{{ item.nombre_especialista }}</td>
+                                                <td>{{ item.periodo }}</td>
+                                                <td class="text-end">{{ item.total_pagos }}</td>
+                                                <td class="text-end">{{ "%.2f"|format(item.ingresos) }}</td>
+                                                <td class="text-end">{{ item.pagos_cancelados }}</td>
+                                                <td class="text-end">{{ "%.2f"|format(item.tasa_cancelacion) }}%</td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% if estadisticas.resumen_especialista_mes|length == 0 %}
+                                            <tr>
+                                                <td colspan="6" class="text-center">Sin datos</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if not filtros.cedula_cliente %}
+                <div class="row mt-4">
+                    <div class="col-12 col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Pagos por tipo</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Tipo</th>
+                                                <th class="text-end">Pagos</th>
+                                                <th class="text-end">Ingresos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in estadisticas.pagos_por_tipo %}
+                                            <tr>
+                                                <td>{{ item.nombre_tipo_pago }}</td>
+                                                <td class="text-end">{{ item.total_pagos }}</td>
+                                                <td class="text-end">{{ "%.2f"|format(item.ingresos) }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% if estadisticas.pagos_por_tipo|length == 0 %}
+                                            <tr>
+                                                <td colspan="3" class="text-center">Sin datos</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Pagos por moneda</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Moneda</th>
+                                                <th class="text-end">Pagos</th>
+                                                <th class="text-end">Ingresos</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for item in estadisticas.pagos_por_moneda %}
+                                            <tr>
+                                                <td>{{ item.nombre_moneda }}</td>
+                                                <td class="text-end">{{ item.total_pagos }}</td>
+                                                <td class="text-end">{{ "%.2f"|format(item.ingresos) }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            {% if estadisticas.pagos_por_moneda|length == 0 %}
+                                            <tr>
+                                                <td colspan="3" class="text-center">Sin datos</td>
+                                            </tr>
+                                            {% endif %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row mt-4">
+                    <div class="col-12 col-xl-8">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Ingresos por mes</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="chart-pagos-mes"></div>
+                            </div>
+                        </div>
+                    </div>
+                    {% if not filtros.cedula_cliente %}
+                    <div class="col-12 col-xl-4">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Frecuencia e ingresos por cliente</h5>
+                            </div>
+                            <div class="card-body">
+                                <ul class="list-group">
+                                    {% for cliente in estadisticas.top_clientes %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <span>{{ cliente.nombre_cliente }} <small class="text-muted">({{
+                                                cliente.total_pagos }} visitas)</small></span>
+                                        <span class="badge bg-primary rounded-pill">{{ "%.2f"|format(cliente.ingresos)
+                                            }}</span>
+                                    </li>
+                                    {% endfor %}
+                                    {% if estadisticas.top_clientes|length == 0 %}
+                                    <li class="list-group-item text-center">Sin datos</li>
+                                    {% endif %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>{% if filtros.cedula_cliente %}Detalle de pagos del cliente{% else %}Últimos pagos{% endif
+                            %}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>{% if filtros.cedula_cliente %}Servicio{% else %}Pago{% endif %}</th>
+                                        <th>Fecha</th>
+                                        <th class="text-end">Monto</th>
+                                        {% if not filtros.cedula_cliente %}
+                                        <th>Cliente</th>
+                                        <th>Tipo</th>
+                                        <th>Moneda</th>
+                                        {% else %}
+                                        <th>Estado</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for pago in estadisticas.ultimos_pagos %}
+                                    <tr>
+                                        <td>{% if filtros.cedula_cliente %}{{ pago.cod_servicio }} - {{ pago.servicio or
+                                            'Servicio' }}{% else %}{{ pago.cod_pago }}{% endif %}</td>
+                                        <td>{{ pago.fecha_pago }}</td>
+                                        <td class="text-end">{{ "%.2f"|format(pago.monto) }}</td>
+                                        {% if not filtros.cedula_cliente %}
+                                        <td>{{ pago.cliente }}</td>
+                                        <td>{{ pago.tipo_pago }}</td>
+                                        <td>{{ pago.moneda }}</td>
+                                        {% else %}
+                                        <td>{% if pago.status == 1 %}Activo{% else %}Anulado{% endif %}</td>
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                    {% if estadisticas.ultimos_pagos|length == 0 %}
+                                    <tr>
+                                        <td colspan="6" class="text-center">Sin datos</td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script id="pagosPorMesData" type="application/json">{{ estadisticas.pagos_por_mes | tojson }}</script>
+<script>
+    const pagosPorMes = JSON.parse(document.getElementById('pagosPorMesData').textContent);
+    const chartContainer = document.querySelector('#chart-pagos-mes');
+
+    if (!Array.isArray(pagosPorMes) || pagosPorMes.length === 0 || pagosPorMes.every(item => Number(item.ingresos) === 0)) {
+        chartContainer.innerHTML = '<div class="text-center text-muted py-4">Sin datos para este período</div>';
+    } else {
+        const categorias = pagosPorMes.map(item => item.periodo);
+        const ingresos = pagosPorMes.map(item => Number(item.ingresos));
+
+        new ApexCharts(chartContainer, {
+            series: [{ name: 'Ingresos', data: ingresos }],
+            chart: { type: 'area', height: 320 },
+            stroke: { curve: 'smooth', width: 3 },
+            fill: { type: 'gradient', gradient: { opacityFrom: 0.45, opacityTo: 0.05 } },
+            xaxis: { categories },
+            tooltip: { y: { formatter: val => '$' + val.toFixed(2) } }
+        }).render();
+    }
+
+    const updateHiddenFields = () => {
+        const values = {
+            desde: document.getElementById('desde').value,
+            hasta: document.getElementById('hasta').value,
+            cod_tipo_pago: document.getElementById('cod_tipo_pago').value,
+            status: document.getElementById('status').value,
+            cedula_especialista: document.getElementById('cedula_especialista').value,
+            cedula_cliente: document.getElementById('cedula_cliente').value,
+        };
+
+        document.getElementById('pdf_desde').value = values.desde;
+        document.getElementById('pdf_hasta').value = values.hasta;
+        document.getElementById('pdf_cod_tipo_pago').value = values.cod_tipo_pago;
+        document.getElementById('pdf_status').value = values.status;
+        document.getElementById('pdf_cedula_especialista').value = values.cedula_especialista;
+        document.getElementById('pdf_cedula_cliente').value = values.cedula_cliente;
+
+        document.getElementById('excel_desde').value = values.desde;
+        document.getElementById('excel_hasta').value = values.hasta;
+        document.getElementById('excel_cod_tipo_pago').value = values.cod_tipo_pago;
+        document.getElementById('excel_status').value = values.status;
+        document.getElementById('excel_cedula_especialista').value = values.cedula_especialista;
+        document.getElementById('excel_cedula_cliente').value = values.cedula_cliente;
+    };
+
+    document.getElementById('formPDF').addEventListener('submit', updateHiddenFields);
+    document.getElementById('formExcel').addEventListener('submit', updateHiddenFields);
+    document.getElementById('btnLimpiar').addEventListener('click', function () {
+        window.location = '/admin?ruta=reporte_pago_estadistico';
+    });
+</script>

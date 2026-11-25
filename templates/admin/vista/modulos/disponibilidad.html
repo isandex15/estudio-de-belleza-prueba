@@ -1,0 +1,156 @@
+<div id="main">
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Disponibilidad Especialista</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"> <a href="/admin?ruta=inicio">Inicio</a></li>
+
+                            <li class="breadcrumb-item active" aria-current="page">
+                                Especialista
+                            </li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sección principal -->
+        <section class="section" data-modulo="disponibilidad">
+            <div class="card">
+                <div class="card-header">
+
+                </div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs" id="especialistasTab" role="tablist">
+
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link active" id="tab-estilistas" data-bs-toggle="tab" href="#estilistas"
+                                role="tab" aria-controls="estilistas" aria-selected="true">
+                                Estilistas
+                            </a>
+                        </li>
+
+                        <li class="nav-item" role="presentation">
+                            <a class="nav-link" id="tab-manicuristas" data-bs-toggle="tab" href="#manicuristas"
+                                role="tab" aria-controls="manicuristas" aria-selected="false">
+                                Manicuristas
+                            </a>
+                        </li>
+
+                    </ul>
+
+                    <div class="tab-content" id="especialistasTabContent">
+
+                        <!-- ===================== -->
+                        <!-- ESTILISTAS -->
+                        <!-- ===================== -->
+                        <div class="tab-pane fade show active" id="estilistas" role="tabpanel"
+                            aria-labelledby="tab-estilistas">
+
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered mb-0" id="table1">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Cédula</th>
+                                            <th>Especialista</th>
+                                            <th>Nombre</th>
+                                            <th>Fecha</th>
+                                            <th>Hora</th>
+                                            <th>Status</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for datos in estilistas %}
+                                        <tr>
+                                            <td>{{ datos.cedula_especialista }}</td>
+                                            <td>{{ datos.especialista }}</td>
+                                            <td>{{ datos.nombre_usuario }}</td>
+                                            <td>{{ datos.fecha_disponibilidad }}</td>
+                                            <td>{{ datos.hora_disponibilidad }}</td>
+
+                                            <td>
+                                                <span
+                                                    class="badge {{ 'bg-success' if datos.status|int == 1 else 'bg-danger' }}">
+                                                    {{ 'Ocupada' if datos.status|int == 1 else 'Cancelado' }}
+                                                </span>
+                                            </td>
+
+
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        </div>
+
+                        <!-- ===================== -->
+                        <!-- MANICURISTAS -->
+                        <!-- ===================== -->
+                        <div class="tab-pane fade" id="manicuristas" role="tabpanel" aria-labelledby="tab-manicuristas">
+
+                            <div class="table-responsive">
+
+                                <table class="table table-bordered mb-0" id="table2">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Cédula</th>
+                                            <th>Especialista</th>
+                                            <th>Nombre</th>
+                                            <th>Fecha</th>
+                                            <th>Hora</th>
+                                            <th>Status</th>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        {% for datos in manicuristas %}
+                                        <tr>
+                                            <td>{{ datos.cedula_especialista }}</td>
+                                            <td>{{ datos.especialista }}</td>
+                                            <td>{{ datos.nombre_usuario }}</td>
+                                            <td>{{ datos.fecha_disponibilidad }}</td>
+                                            <td>{{ datos.hora_disponibilidad }}</td>
+
+                                            <td>
+                                                <span
+                                                    class="badge {{ 'bg-success' if datos.status|int == 1 else 'bg-danger' }}">
+                                                    {{ 'Ocupada' if datos.status|int == 1 else 'Cancelada' }}
+                                                </span>
+                                            </td>
+
+
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+                        </div>
+
+                    </div>
+                  
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+
+    <script src="{{ url_for('static', filename='/assets/js/modulos-js/especialista.js') }}"></script>
+
+
+</div>

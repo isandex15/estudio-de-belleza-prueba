@@ -1,0 +1,77 @@
+{
+    "67": {
+        "fecha": "2026-09-14",
+        "productos": {
+            "7": {
+                "cantidad": 1,
+                "cod_conteo": 5
+            }
+        }
+    },
+    "68": {
+        "fecha": "2026-09-14",
+        "productos": {
+            "7": {
+                "cantidad": 2,
+                "cod_conteo": 6
+            }
+        }
+    },
+    "69": {
+        "fecha": "2026-09-15",
+        "productos": {
+            "7": {
+                "cantidad": 1,
+                "cod_conteo": 7
+            }
+        }
+    },
+    "70": {
+        "fecha": "2026-09-16",
+        "productos": {
+            "7": {
+                "cantidad": 2,
+                "cod_conteo": 8
+            }
+        }
+    },
+    "73": {
+        "fecha": "2026-09-24",
+        "productos": {
+            "8": {
+                "cantidad": 1,
+                "cod_conteo": 13
+            },
+            "7": {
+                "cantidad": 1,
+                "cod_conteo": 14
+            }
+        }
+    },
+    "74": {
+        "fecha": "2026-09-17",
+        "productos": {
+            "8": {
+                "cantidad": 1,
+                "cod_conteo": 15
+            },
+            "9": {
+                "cantidad": 1,
+                "cod_conteo": 16
+            }
+        }
+    },
+    "75": {
+        "fecha": "2026-09-18",
+        "productos": {
+            "8": {
+                "cantidad": 1,
+                "cod_conteo": 17
+            },
+            "7": {
+                "cantidad": 1,
+                "cod_conteo": 18
+            }
+        }
+    }
+}

@@ -1,0 +1,330 @@
+{
+  "info": {
+    "_postman_id": "eb882b59-6b55-4a00-ac14-80b3656e9051",
+    "name": "pruebas backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60364502",
+    "_collection_link": "https://go.postman.co/collection/60364502-eb882b59-6b55-4a00-ac14-80b3656e9051?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "login",
+      "item": [
+        {
+          "name": "generar captcha",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta JSON\", () => {\r\n  pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado correcto se genero el captcha\", () => {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "generar_captcha",
+                  "value": "1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": [
+                "{{base_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "verificar captcha",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta JSON\", () => {\r\n  pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado correcto se verifico el captcha\", () => {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "respuesta",
+                  "value": "{{captcha_respuesta}}"
+                },
+                {
+                  "key": "login",
+                  "value": "1"
+                },
+                {
+                  "key": "verificar_captcha",
+                  "value": "1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": [
+                "{{base_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "iniciar sesion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta JSON\", () => {\r\n  pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado correcto se inicio sesion\", () => {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "login",
+                  "value": "1"
+                },
+                {
+                  "key": "cedula",
+                  "value": "{{cedula}}"
+                },
+                {
+                  "key": "password",
+                  "value": "{{password}}"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}",
+              "host": [
+                "{{base_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tipo servicio",
+      "item": [
+        {
+          "name": "registrar ripo de servicio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta JSON\", () => {\r\n  pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado correcto se registro el tipo de servicio\", () => {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "registrar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_servicio",
+                  "value": "hola"
+                },
+                {
+                  "key": "cod_tipo-servicio",
+                  "value": "18"
+                },
+                {
+                  "key": "precio",
+                  "value": "1216"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{tiposervicio_url}}",
+              "host": [
+                "{{tiposervicio_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editar tipo de servicio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta JSON\", () => {\r\n  pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado correcto se edito el tipo de servicio\", () => {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "actualizar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_tipo-servicio",
+                  "value": "18"
+                },
+                {
+                  "key": "nombre_servicio",
+                  "value": "hol"
+                },
+                {
+                  "key": "precio",
+                  "value": "1216"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{tiposervicio_url}}",
+              "host": [
+                "{{tiposervicio_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar tipo de servicio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta JSON\", () => {\n  pm.response.to.be.json;\n});\n\npm.test(\"Estado correcto se elimino el tipo de servicio\", () => {\n  pm.response.to.have.status(200);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "eliminar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_tipo-servicio",
+                  "value": "18"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{tiposervicio_url}}",
+              "host": [
+                "{{tiposervicio_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "compra",
+      "item": [
+        {
+          "name": "registrar compra",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta JSON\", () => {\r\n  pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado correcto se verifico el endpoint de registrar compra\", () => {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "registrar",
+                  "value": "1"
+                },
+                {
+                  "key": "total",
+                  "value": "12"
+                },
+                {
+                  "key": "proveedor",
+                  "value": "566788"
+                },
+                {
+                  "key": "productos",
+                  "value": "1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{compra_url}}",
+              "host": [
+                "{{compra_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "tiposervicio_url",
+      "value": "http://localhost:5000/admin?ruta=tiposervicio"
+    },
+    {
+      "key": "compra_url",
+      "value": "http://localhost:5000/admin?ruta=compra"
+    }
+  ]
+}

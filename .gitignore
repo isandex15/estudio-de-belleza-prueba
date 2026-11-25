@@ -1,0 +1,17 @@
+.env
+.env.*
+!.env.example
+**/__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+node_modules/
+playwright/node_modules/
+playwright/test-results/
+playwright/playwright-report/
+test-results/
+static/backups/
+reportes/*.xlsx
+/sac*.sql
+/seguridad*.sql

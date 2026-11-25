@@ -1,0 +1,132 @@
+/* ===== MANUAL GUIADO  esto es herader solo header ===== */
+.driver-popover.ayuda-personalizada {
+    box-sizing: border-box !important;
+    width: 370px !important;
+    max-width: calc(100vw - 24px) !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+    background: linear-gradient(145deg, #fff, #f8faff) !important;
+    color: #1e293b !important;
+    border: 1px solid #dce5f3 !important;
+    border-radius: 20px !important;
+    box-shadow: 0 24px 70px rgba(15, 23, 42, .18), 0 8px 20px rgba(37, 99, 235, .08) !important;
+    font-family: "Segoe UI", Arial, sans-serif !important;
+}
+
+.driver-popover.ayuda-personalizada::before {
+    content: "";
+    display: block;
+    height: 5px;
+    background: linear-gradient(90deg, #2563eb, #7c3aed, #06b6d4);
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-title {
+    padding: 24px 48px 12px 24px !important;
+    color: #172554 !important;
+    font-size: 21px !important;
+    font-weight: 800 !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-description {
+    padding: 0 24px 23px !important;
+    color: #64748b !important;
+    font-size: 14px !important;
+    line-height: 1.85 !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-close-btn {
+    top: 16px !important;
+    right: 16px !important;
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 10px !important;
+    color: #64748b !important;
+    background: #eef2f7 !important;
+    transition: .2s !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-close-btn:hover {
+    color: #dc2626 !important;
+    background: #fee2e2 !important;
+    transform: rotate(90deg) !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-footer {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    margin: 0 !important;
+    padding: 16px 22px !important;
+    background: #f1f5fb !important;
+    border-top: 1px solid #e2e8f0 !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-progress-text {
+    margin-right: auto !important;
+    padding: 6px 10px !important;
+    color: #475569 !important;
+    background: #e2e8f0 !important;
+    border-radius: 8px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-navigation-btns {
+    display: flex !important;
+    gap: 8px !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-prev-btn,
+.driver-popover.ayuda-personalizada .driver-popover-next-btn {
+    padding: 10px 15px !important;
+    border-radius: 10px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    text-shadow: none !important;
+    transition: .2s !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-prev-btn {
+    color: #334155 !important;
+    background: #fff !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-next-btn {
+    color: #fff !important;
+    background: linear-gradient(135deg, #2563eb, #4f46e5) !important;
+    border: 1px solid #2563eb !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, .22) !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-prev-btn:hover,
+.driver-popover.ayuda-personalizada .driver-popover-next-btn:hover {
+    transform: translateY(-2px) !important;
+}
+
+.driver-popover.ayuda-personalizada .driver-popover-arrow {
+    border-color: #fff !important;
+}
+
+@media (max-width: 480px) {
+    .driver-popover.ayuda-personalizada {
+        width: calc(100vw - 24px) !important;
+        border-radius: 16px !important;
+    }
+
+    .driver-popover.ayuda-personalizada .driver-popover-title {
+        padding: 22px 45px 10px 18px !important;
+        font-size: 19px !important;
+    }
+
+    .driver-popover.ayuda-personalizada .driver-popover-description {
+        padding: 0 18px 20px !important;
+        font-size: 13px !important;
+    }
+
+    .driver-popover.ayuda-personalizada .driver-popover-footer {
+        padding: 14px !important;
+    }
+}/* ===== MANUAL GUIADO  esto es herader solo header ===== */
+

@@ -1,0 +1,395 @@
+<!-- VISTA: PAGOS PERSONAL -->
+<div id="main">
+
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Pagos Personal</h3>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                      <li class="breadcrumb-item"> <a href="/admin?ruta=inicio">Inicio</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Pagos Personal</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="section" data-modulo="pagospersonal">
+        <div class="card">
+            <div class="card-header">
+                <button type="button" class="btn btn-primary rounded-pill" data-bs-toggle="modal" data-bs-target="#modalRegistrarPagoPersonal">
+                    Registrar Pago Personal
+                </button>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped mb-0" id="pagospersonalTable">
+                        <thead>
+                            <tr>
+                                <th>Servicio</th>
+                                <th>Cliente</th>
+                                <th>Especialista</th>
+                                <th>Fecha Pago</th>
+                                <th>Hora</th>
+                                <th>%</th>
+                                <th>Monto Servicio</th>
+                                <th>Monto a Pagar</th>
+                                <th>Total del Día</th>
+                                <th>Status</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if registro %}
+                                {% for p in registro %}
+                                    <tr>
+                                        <td>{{ p['cod_servicio'] }} - {{ p['servicio'] or 'Servicio' }}</td>
+                                        <td>{{ p['cedula'] }} - {{ p['nombre_cliente'] }}</td>
+                                        <td>{{ p['cedula_especialista'] }} - {{ p['nombre_especialista'] or 'Sin especialista' }}</td>
+                                        <td>{{ p['fecha_pago'] }}</td>
+                                        <td>{{ p['hora_pago'] }}</td>
+                                        <td>{{ p['porcentaje'] }}%</td>
+                                        <td>{{ '$' ~ ('%.2f'|format(p['monto_servicio']|default(0, true)|float)) }}</td>
+                                        <td>{{ '$' ~ ('%.2f'|format(p['monto_a_pagar']|default(0, true)|float)) }}</td>
+                                        <td>{{ '$' ~ ('%.2f'|format(p['total_pago_dia']|default(0, true)|float)) }}</td>
+                                        <td>
+                                            {% if p['status'] == 1 %}
+                                                <span class="badge bg-success">Activo</span>
+                                            {% else %}
+                                                <span class="badge bg-danger">Anulado</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="buttons d-flex gap-2">
+                                                <button type="button" class="btn btn-info btn-sm btn-detalle-pago-personal"
+                                                        data-bs-toggle="modal" data-bs-target="#modalDetallePagoPersonal"
+                                                        data-referencia="{{ (p['referencia_pago'] or 'PP-' ~ p['cod_pago_personal'])|e }}"
+                                                        data-servicio="{{ (p['cod_servicio'] ~ ' - ' ~ (p['servicio'] or 'Servicio'))|e }}"
+                                                        data-cliente="{{ p['nombre_cliente']|e }}"
+                                                        data-especialista="{{ p['nombre_especialista']|e }}"
+                                                        data-fecha="{{ p['fecha_pago'] }}"
+                                                        data-hora="{{ p['hora_pago'] }}"
+                                                        data-porcentaje="{{ p['porcentaje'] }}"
+                                                        data-banco="{{ p['nombre_banco'] or 'Sin información' }}"
+                                                        data-tipo-pago="Pago móvil"
+                                                        data-moneda="BCV"
+                                                        data-monto="{{ '%.2f'|format(p['monto_a_pagar']|default(0, true)|float) }}"
+                                                        data-comprobante="{{ url_for('static', filename=p['comprobante']) if p['comprobante'] else '' }}"
+                                                        title="Ver detalle">
+                                                    <i class="bi bi-receipt"></i>
+                                                </button>
+                                                {% if p['status'] == 1 %}
+                                                    <button type="button" class="btn btn-danger btn-sm btn-anular-personal" data-bs-toggle="modal" data-bs-target="#modalAnularPagoPersonal" data-cod-pago-personal="{{ p['cod_pago_personal'] }}">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <button class="btn btn-danger btn-sm" disabled title="Pago anulado">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade text-left" id="modalRegistrarPagoPersonal" tabindex="-1" role="dialog" aria-labelledby="modalRegistrarPagoPersonalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+            <div class="modal-content pago-personal-modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title text-white" id="modalRegistrarPagoPersonalLabel"><i class="bi bi-person-badge me-2"></i>Registrar pago personal</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form id="formRegistrarPagoPersonal" method="POST" action="/admin?ruta=pagospersonal" enctype="multipart/form-data" class="d-flex flex-column">
+                    <div class="modal-body overflow-auto">
+                        <input type="hidden" name="registrar" value="1">
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <label for="cod_servicio_personal" class="form-label mb-0" style="font-weight: bold;"><i class="bi bi-clipboard-check me-2"></i>Servicio</label>
+                                <span class="text-danger" style="font-size: 20px;"> *</span>
+                                <button type="button" class="btn btn-xs ms-2" data-toggle="tooltip" data-placement="top" title="Seleccione el servicio para registrar la comisión del especialista.">
+                                    <i class="bi bi-info-circle"></i>
+                                </button>
+                            </div>
+                            <select class="form-select" id="cod_servicio_personal" name="cod_servicio" required>
+                                <option value="">Seleccione un servicio</option>
+                                {% for servicio in servicios %}
+                                    <option value="{{ servicio['cod_servicio'] }}"
+                                            data-precio="{{ servicio['precio_total'] or 0 }}"
+                                            data-especialista="{{ servicio['nombre_especialista'] or 'Sin especialista' }}"
+                                            data-cliente="{{ servicio['nombre_cliente'] }}"
+                                            data-fecha-realizacion="{{ servicio['fecha'] }}">
+                                        {{ servicio['cod_servicio'] }} - {{ servicio['descripcion'] or 'Servicio' }} | Especialista: {{ servicio['nombre_especialista'] or 'Sin especialista' }} | Cliente: {{ servicio['nombre_cliente'] }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div id="detalleServicioPersonal" class="alert alert-light border mb-3" style="display:none;"></div>
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <label for="fecha_pago_personal" class="form-label mb-0" style="font-weight: bold;"><i class="bi bi-calendar3 me-2"></i>Fecha de pago</label>
+                                <span class="text-danger" style="font-size: 20px;"> *</span>
+                                <button type="button" class="btn btn-xs ms-2" data-toggle="tooltip" data-placement="top" title="Seleccione la fecha en la que se registrar la comisión.">
+                                    <i class="bi bi-info-circle"></i>
+                                </button>
+                            </div>
+                            <input type="date" class="form-control no-calendar" id="fecha_pago_personal" name="fecha_pago" required readonly>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <label for="hora_pago_personal" class="form-label mb-0" style="font-weight: bold;"><i class="bi bi-clock me-2"></i>Hora</label>
+                                <span class="text-danger" style="font-size: 20px;"> *</span>
+                                <button type="button" class="btn btn-xs ms-2" data-toggle="tooltip" data-placement="top" title="Ingrese la hora exacta del pago.">
+                                    <i class="bi bi-info-circle"></i>
+                                </button>
+                            </div>
+                            <div class="hora-pago-control">
+                                <i class="bi bi-clock hora-pago-icon" aria-hidden="true"></i>
+                                <input type="text" class="form-control hora-pago-input hora-pago-picker" id="hora_pago_personal" name="hora_pago" placeholder="Seleccionar hora" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center mb-1">
+                                <label for="porcentaje_personal" class="form-label mb-0" style="font-weight: bold;"><i class="bi bi-percent me-2"></i>Porcentaje del pago</label>
+                                <span class="text-danger" style="font-size: 20px;"> *</span>
+                                <button type="button" class="btn btn-xs ms-2" data-toggle="tooltip" data-placement="top" title="Ingrese el porcentaje de la comisión del especialista.">
+                                    <i class="bi bi-info-circle"></i>
+                                </button>
+                            </div>
+                            <input type="number" min="1" max="100" class="form-control" id="porcentaje_personal" name="porcentaje" required>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="cod_tipo_pago_personal" class="form-label fw-bold">Tipo de pago *</label>
+                                <select class="form-select" id="cod_tipo_pago_personal" name="cod_tipo_pago" required>
+                                    <option value="">Seleccione un tipo</option>
+                                    {% for tipo in tipopagos %}
+                                    <option value="{{ tipo.cod_tipo_pago }}">{{ tipo.nombre_tipo_pago }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="banco_pago_personal" class="form-label fw-bold">Banco *</label>
+                                <div class="input-group">
+                                    <select class="form-select" id="banco_pago_personal" name="cod_banco" required>
+                                        <option value="">Seleccione un banco</option>
+                                        {% for banco in bancos %}
+                                        <option value="{{ banco.cod_banco }}">{{ banco.nombre_banco }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="button" class="btn btn-outline-primary" id="btnAgregarBanco">Nuevo</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row g-3 mt-1">
+                            <div class="col-md-6">
+                                <label for="tasa_pago_personal" class="form-label fw-bold">Tasa *</label>
+                                <select class="form-select" id="tasa_pago_personal" name="tasa_pago" required>
+                                    <option value="">Seleccione la tasa</option>
+                                    <option value="BCV">BCV</option>
+                                    <option value="Euro">Euro</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="referencia_pago_personal" class="form-label fw-bold">Referencia del pago móvil *</label>
+                                <input type="text" class="form-control" id="referencia_pago_personal" name="referencia_pago" maxlength="100" placeholder="Ingrese la referencia bancaria" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="comprobante_pago_personal" class="form-label fw-bold">Comprobante *</label>
+                                <input type="file" class="form-control" id="comprobante_pago_personal" name="comprobante_pago" accept="image/jpeg,image/png,image/gif" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="alert alert-light d-flex align-items-center mb-0" style="font-weight: bold;" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <span>Todos los campos marcados con (*) son obligatorios</span>
+                    </div>
+                    <div class="modal-footer sticky-bottom bg-white border-top">
+                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary ms-1">Guardar pago</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-left" id="modalAgregarBanco" tabindex="-1" aria-labelledby="modalAgregarBancoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title text-white" id="modalAgregarBancoLabel"><i class="bi bi-bank me-2"></i>Agregar banco</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form id="formAgregarBanco" method="POST" action="/admin?ruta=pagospersonal">
+                    <div class="modal-body">
+                        <input type="hidden" name="crear_banco" value="1">
+                        <label for="nombre_banco_nuevo" class="form-label fw-bold">Nombre del banco *</label>
+                        <input type="text" class="form-control" id="nombre_banco_nuevo" name="nombre_banco" maxlength="35" required>
+                        <div id="errorNombreBanco" class="invalid-feedback"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-primary">Guardar banco</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-left" id="modalDetallePagoPersonal" tabindex="-1" aria-labelledby="modalDetallePagoPersonalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title text-white" id="modalDetallePagoPersonalLabel"><i class="bi bi-receipt me-2"></i>Comprobante de pago personal</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="border rounded p-3 bg-light">
+                        <div class="d-flex justify-content-between mb-3"><strong>Referencia</strong><span id="detalleReferencia"></span></div>
+                        <div class="d-flex justify-content-between"><span>Servicio</span><strong id="detalleServicio"></strong></div>
+                        <div class="d-flex justify-content-between"><span>Cliente</span><strong id="detalleCliente"></strong></div>
+                        <div class="d-flex justify-content-between"><span>Especialista</span><strong id="detalleEspecialista"></strong></div>
+                        <hr>
+                        <div class="d-flex justify-content-between"><span>Fecha y hora</span><strong id="detalleFechaHora"></strong></div>
+                        <div class="d-flex justify-content-between"><span>Porcentaje</span><strong id="detallePorcentaje"></strong></div>
+                        <div class="d-flex justify-content-between"><span>Tipo de pago</span><strong id="detalleTipoPago"></strong></div>
+                        <div class="d-flex justify-content-between"><span>Moneda</span><strong id="detalleMoneda"></strong></div>
+                        <div class="d-flex justify-content-between"><span>Banco</span><strong id="detalleBanco"></strong></div>
+                        <div class="d-flex justify-content-between mt-3 fs-5"><span>Comisión pagada</span><strong id="detalleMonto"></strong></div>
+                        <div class="mt-3 text-center comprobante-preview" id="detalleComprobanteWrap" hidden>
+                            <img id="detalleComprobante" class="img-fluid rounded border" alt="Comprobante de pago">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade text-left" id="modalAnularPagoPersonal" tabindex="-1" role="dialog" aria-labelledby="modalAnularPagoPersonalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title text-white" id="modalAnularPagoPersonalLabel"><i class="bi bi-exclamation-triangle me-2"></i>Confirmar Anulación</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <form id="formAnularPagoPersonal" method="POST" action="/admin?ruta=pagospersonal">
+                    <div class="modal-body">
+                        <input type="hidden" name="anular" value="1">
+                        <input type="hidden" id="cod_pago_personal_a_anular" name="cod_pago_personal_a_anular">
+                        <div class="alert alert-light border mb-0 d-flex align-items-center" role="alert">
+                            <i class="bi bi-question-circle-fill text-danger me-2"></i>
+                            <p class="mb-0">¿Desea anular este pago personal?</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light-secondary" data-bs-dismiss="modal">No</button>
+                        <button type="submit" class="btn btn-danger ms-1">Anular</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .pago-personal-modal-content {
+        max-height: calc(100vh - 2rem);
+        overflow: hidden;
+    }
+
+    .pago-personal-modal-content form {
+        min-height: 0;
+    }
+
+    .pago-personal-modal-content .modal-body {
+        min-height: 0;
+        overflow-y: auto !important;
+    }
+
+    #modalDetallePagoPersonal .modal-dialog {
+        width: calc(100% - 1rem);
+        max-width: 560px;
+    }
+
+    #modalDetallePagoPersonal .modal-body,
+    #modalDetallePagoPersonal .border {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    #modalDetallePagoPersonal .comprobante-preview {
+        width: 100%;
+        max-width: 100%;
+        max-height: 48vh;
+        overflow: hidden;
+    }
+
+    #modalDetallePagoPersonal .comprobante-preview img {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        max-height: 48vh;
+        margin: 0 auto;
+        object-fit: contain;
+    }
+
+    .hora-pago-control {
+        position: relative;
+    }
+
+    .hora-pago-icon {
+        position: absolute;
+        top: 50%;
+        left: 1rem;
+        z-index: 1;
+        color: #4361c2;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .hora-pago-input {
+        min-height: 48px;
+        padding-left: 2.75rem;
+        border: 1px solid #d7e0f1;
+        border-radius: 10px;
+        background: #f8faff;
+        color: #3d4f70;
+        box-shadow: inset 0 1px 2px rgba(48, 69, 117, 0.04);
+    }
+
+    .hora-pago-input:focus {
+        border-color: #4361c2;
+        background: #fff;
+        box-shadow: 0 0 0 3px rgba(67, 97, 194, 0.14);
+    }
+
+    .hora-pago-control .flatpickr-calendar {
+        margin-top: 0.35rem;
+        border: 1px solid #d7e0f1;
+        border-radius: 10px;
+        box-shadow: 0 10px 24px rgba(39, 58, 105, 0.14);
+    }
+
+    .hora-pago-control .flatpickr-time input {
+        font-weight: 600;
+        color: #30456f;
+    }
+</style>
+
+<div id="mensajePagoPersonalData" data-mensaje='{{ mensaje|tojson|safe if mensaje else "null" }}' hidden></div>
+
+<script src="{{ url_for('static', filename='assets/js/modulos-js/pagospersonal.js') }}"></script>

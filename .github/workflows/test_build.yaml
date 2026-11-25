@@ -1,0 +1,42 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: Pruebas unitarias
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pytest Flask mysql-connector-python python-dotenv requests bcrypt reportlab openpyxl
+
+      - name: Ejecutar pruebas unitarias
+        run: |
+          mkdir -p test-results
+          python -m pytest "pytest/test/pruebas-unitarias" -q --junitxml=test-results/unit-tests.xml
+
+      - name: Guardar reporte de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-pruebas-unitarias
+          path: test-results/unit-tests.xml
+          if-no-files-found: ignore
