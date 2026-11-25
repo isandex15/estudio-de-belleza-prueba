@@ -4,10 +4,40 @@
 USE sac;
 
 /* Indices de busqueda */
-DROP INDEX IF EXISTS idx_tipo_servicio_nombre ON tipo_servicio;
-DROP INDEX IF EXISTS idx_tipo_producto_nombre ON tipo_producto;
-DROP INDEX IF EXISTS idx_categoria_nombre ON categoria;
-DROP INDEX IF EXISTS idx_compra_fecha_proveedor ON compra;
+DROP PROCEDURE IF EXISTS sp_drop_index_if_exists;
+DELIMITER //
+CREATE PROCEDURE sp_drop_index_if_exists(
+    IN p_table_name VARCHAR(64),
+    IN p_index_name VARCHAR(64)
+)
+BEGIN
+    DECLARE v_index_exists INT DEFAULT 0;
+
+    SELECT COUNT(*)
+      INTO v_index_exists
+      FROM information_schema.statistics
+     WHERE table_schema = DATABASE()
+       AND table_name = p_table_name
+       AND index_name = p_index_name;
+
+    IF v_index_exists > 0 THEN
+        SET @drop_index_statement = CONCAT(
+            'DROP INDEX `', REPLACE(p_index_name, '`', '``'),
+            '` ON `', REPLACE(p_table_name, '`', '``'), '`'
+        );
+        PREPARE drop_index_stmt FROM @drop_index_statement;
+        EXECUTE drop_index_stmt;
+        DEALLOCATE PREPARE drop_index_stmt;
+    END IF;
+END //
+DELIMITER ;
+
+CALL sp_drop_index_if_exists('tipo_servicio', 'idx_tipo_servicio_nombre');
+CALL sp_drop_index_if_exists('tipo_producto', 'idx_tipo_producto_nombre');
+CALL sp_drop_index_if_exists('categoria', 'idx_categoria_nombre');
+CALL sp_drop_index_if_exists('compra', 'idx_compra_fecha_proveedor');
+DROP PROCEDURE sp_drop_index_if_exists;
+
 CREATE INDEX idx_tipo_servicio_nombre ON tipo_servicio (nombre_servicio);
 CREATE INDEX idx_tipo_producto_nombre ON tipo_producto (nombre_tipo_producto);
 CREATE INDEX idx_categoria_nombre ON categoria (nombre_categoria);
