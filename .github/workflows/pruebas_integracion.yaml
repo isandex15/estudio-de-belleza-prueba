@@ -1,0 +1,36 @@
+name: pruebas_integracion
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+  permissions:
+    contents: read
+
+    jobs:
+    integration-tests:
+    name: pruebas de integracion
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Descargar codigo
+        uses: actions/checkout@v4
+      - name: configurar python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: instalar dependencias
+        run: 
+         python -m pip install --upgrade pip
+         python -m pip install pytest Flask MySQL-python python-dotenv requests bcrypt reportlab openpyxl locust
+      - name: ejecutar pruebas de integracion
+        run:
+         mkdir -p test-results
+         python -m pytest "pytest/test/pruebas-integracion" -q --junitxml=test-results/integration-tests.xml
+      - name: guardar reporte de pruebas
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-pruebas-integracion
+
