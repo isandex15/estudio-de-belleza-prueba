@@ -24,12 +24,15 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'html',
+  reporter: process.env.CI
+    ? [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]]
+    : 'html',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
-    headless: false,
-    screenshot: 'on',
-  video: 'on',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:5000',
+    headless: !!process.env.CI,
+    screenshot: process.env.CI ? 'only-on-failure' : 'on',
+    video: process.env.CI ? 'off' : 'on',
     /* Base URL to use in actions like `await page.goto('')`. */
     // baseURL: 'http://localhost:3000',
 
@@ -37,8 +40,15 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  /* Configure projects for major browsers */
-  projects: [
+  /* Keep the full browser matrix locally and use Chromium in CI. */
+  projects: process.env.CI
+    ? [
+        {
+          name: 'chromium',
+          use: { ...devices['Desktop Chrome'] },
+        },
+      ]
+    : [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
@@ -72,13 +82,13 @@ export default defineConfig({
     //   name: 'Google Chrome',
     //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
     // },
-  ],
+      ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://localhost:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    command: 'python ../run_playwright_server.py',
+    url: process.env.PLAYWRIGHT_BASE_URL || 'http://127.0.0.1:5000',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
+  },
 });
 

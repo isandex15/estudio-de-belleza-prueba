@@ -1,0 +1,76 @@
+name: Playwright
+
+on:
+  push:
+    paths:
+      - "app.py"
+      - "admin/**"
+      - "static/**"
+      - "templates/**"
+      - "playwright/**"
+      - "run_playwright_server.py"
+      - ".github/workflows/playwright.yaml"
+  pull_request:
+    paths:
+      - "app.py"
+      - "admin/**"
+      - "static/**"
+      - "templates/**"
+      - "playwright/**"
+      - "run_playwright_server.py"
+      - ".github/workflows/playwright.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  playwright:
+    name: Pruebas Playwright (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: "true"
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias de la aplicación
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install Flask mysql-connector-python python-dotenv requests bcrypt captcha reportlab openpyxl
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: playwright/package-lock.json
+
+      - name: Instalar dependencias de Playwright
+        working-directory: playwright
+        run: npm ci
+
+      - name: Instalar Chromium
+        working-directory: playwright
+        run: npx playwright install --with-deps chromium
+
+      - name: Ejecutar pruebas de humo
+        working-directory: playwright
+        run: npm run test:ci
+
+      - name: Guardar reportes Playwright
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-playwright
+          path: |
+            playwright/playwright-report/
+            playwright/evidencias/
+          if-no-files-found: ignore
