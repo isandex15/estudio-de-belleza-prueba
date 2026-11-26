@@ -64,6 +64,7 @@ jobs:
           done
           curl --fail --silent http://127.0.0.1:5000/ > /dev/null
 
+          set +e
           python -m locust \
             --locustfile locust/smoke.py \
             --headless \
@@ -72,13 +73,23 @@ jobs:
             --spawn-rate 1 \
             --run-time 20s \
             --exit-code-on-error 1 \
-            --csv locust-report/locust \
-            --html locust-report/locust.html
+            --csv locust-report/locust
+          LOCUST_EXIT=$?
+
+          python locust/csv_to_junit.py \
+            locust-report/locust_stats.csv \
+            locust-report/locust.xml
+          REPORT_EXIT=$?
+
+          if [ "$LOCUST_EXIT" -ne 0 ]; then
+            exit "$LOCUST_EXIT"
+          fi
+          exit "$REPORT_EXIT"
 
       - name: Guardar reportes de Locust
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: reporte-locust
-          path: locust-report/
+          name: reporte-locust-junit
+          path: locust-report/locust.xml
           if-no-files-found: ignore
