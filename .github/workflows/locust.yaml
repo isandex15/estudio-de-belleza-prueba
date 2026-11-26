@@ -1,0 +1,84 @@
+name: Locust
+
+on:
+  push:
+    paths:
+      - "app.py"
+      - "admin/**"
+      - "static/**"
+      - "templates/**"
+      - "locust/**"
+      - "run_playwright_server.py"
+      - ".github/workflows/locust.yaml"
+  pull_request:
+    paths:
+      - "app.py"
+      - "admin/**"
+      - "static/**"
+      - "templates/**"
+      - "locust/**"
+      - "run_playwright_server.py"
+      - ".github/workflows/locust.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  locust-smoke:
+    name: Prueba de carga acotada (local)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: ci
+      DB_PASS: ci
+      DB_NAME: sac
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install Flask mysql-connector-python python-dotenv requests bcrypt captcha reportlab openpyxl locust
+
+      - name: Ejecutar carga local y acotada
+        run: |
+          mkdir -p locust-report
+          python run_playwright_server.py > locust-report/server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; wait "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:5000/ > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:5000/ > /dev/null
+
+          python -m locust \
+            --locustfile locust/smoke.py \
+            --headless \
+            --host http://127.0.0.1:5000 \
+            --users 2 \
+            --spawn-rate 1 \
+            --run-time 20s \
+            --exit-code-on-error 1 \
+            --csv locust-report/locust \
+            --html locust-report/locust.html
+
+      - name: Guardar reportes de Locust
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-locust
+          path: locust-report/
+          if-no-files-found: ignore
