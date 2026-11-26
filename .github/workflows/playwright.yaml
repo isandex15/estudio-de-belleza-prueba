@@ -63,14 +63,16 @@ jobs:
 
       - name: Ejecutar pruebas de humo
         working-directory: playwright
-        run: npm run test:ci
+        run: |
+          mkdir -p test-results
+          npm run test:ci
 
-      - name: Guardar reportes Playwright
+      - name: Guardar reporte XML de Playwright
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: reporte-playwright
+          name: reporte-playwright-junit
           path: |
-            playwright/playwright-report/
+            playwright/test-results/junit.xml
             playwright/evidencias/
           if-no-files-found: ignore
