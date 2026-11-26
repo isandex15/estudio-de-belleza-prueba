@@ -7,16 +7,16 @@ from locust import HttpUser, between, task
 
 # Estos datos son los de una cuenta de prueba. Se leen del entorno para no
 # guardar contraseñas en el archivo.
-CEDULA = os.getenv("LOCUST_CEDULA", "4723317").strip()
-PASSWORD = os.getenv("LOCUST_PASSWORD", "admin123").strip()
+CEDULA = os.getenv("LOCUST_CEDULA", "").strip()
+PASSWORD = os.getenv("LOCUST_PASSWORD", "").strip()
 
 # En login.py, el CAPTCHA de prueba usa este código cuando app.testing=True.
 CAPTCHA_CODE = "AB12CD"
 
 # Datos de ejemplo: reemplaza estos códigos por un proveedor y producto
 # existentes en tu base de datos de pruebas.
-COD_PROVEEDOR = 2
-COD_PRODUCTO = 7
+COD_PROVEEDOR = int(os.getenv("LOCUST_COD_PROVEEDOR", "1"))
+COD_PRODUCTO = int(os.getenv("LOCUST_COD_PRODUCTO", "1"))
 CANTIDAD = 1
 PRECIO = 10.00
 

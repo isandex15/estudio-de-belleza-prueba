@@ -19,8 +19,54 @@ USE seguridad;
 
 CREATE TABLE IF NOT EXISTS usuario (
     cedula VARCHAR(12) NOT NULL,
+    nombre_usuario VARCHAR(50) NOT NULL DEFAULT 'Usuario',
+    apellido_usuario VARCHAR(50) NOT NULL DEFAULT 'Pruebas',
+    password VARCHAR(250) NOT NULL DEFAULT '',
+    telefono VARCHAR(12) NOT NULL DEFAULT '',
+    direccion VARCHAR(200) NOT NULL DEFAULT '',
+    correo VARCHAR(100) NOT NULL DEFAULT '',
     status TINYINT(1) NOT NULL,
+    cod_rol INT NOT NULL DEFAULT 1,
+    intentos_fallidos INT DEFAULT 0,
+    ultimo_acceso DATETIME DEFAULT NULL,
+    fecha_registro DATE DEFAULT NULL,
     PRIMARY KEY (cedula)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS rol (
+    cod_rol INT NOT NULL,
+    rol VARCHAR(50) NOT NULL,
+    status TINYINT(1) NOT NULL,
+    PRIMARY KEY (cod_rol)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS acciones (
+    cod_accion INT NOT NULL,
+    nombre_accion VARCHAR(50) NOT NULL,
+    status TINYINT(1) NOT NULL,
+    PRIMARY KEY (cod_accion)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS modulos (
+    cod_modulo INT NOT NULL,
+    nombre_modulo VARCHAR(50) NOT NULL,
+    status TINYINT(1) NOT NULL,
+    PRIMARY KEY (cod_modulo)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS permiso (
+    cod_permiso INT NOT NULL,
+    status TINYINT(1) NOT NULL,
+    cod_modulo INT NOT NULL,
+    cod_accion INT NOT NULL,
+    PRIMARY KEY (cod_permiso)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS rol_permiso (
+    cod_rol_permiso INT NOT NULL,
+    cor_rol INT NOT NULL,
+    cod_permiso INT NOT NULL,
+    PRIMARY KEY (cod_rol_permiso)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS bitacora (
@@ -37,7 +83,36 @@ INSERT INTO usuario (cedula, status)
 VALUES ('CI00000001', 1)
 ON DUPLICATE KEY UPDATE status = VALUES(status);
 
+INSERT INTO rol (cod_rol, rol, status)
+VALUES (1, 'administrador', 1)
+ON DUPLICATE KEY UPDATE rol = VALUES(rol), status = VALUES(status);
+
+INSERT INTO acciones (cod_accion, nombre_accion, status)
+VALUES (1, 'registrar', 1)
+ON DUPLICATE KEY UPDATE nombre_accion = VALUES(nombre_accion), status = VALUES(status);
+
+INSERT INTO modulos (cod_modulo, nombre_modulo, status)
+VALUES (1, 'compra', 1)
+ON DUPLICATE KEY UPDATE nombre_modulo = VALUES(nombre_modulo), status = VALUES(status);
+
+INSERT INTO permiso (cod_permiso, status, cod_modulo, cod_accion)
+VALUES (1, 1, 1, 1)
+ON DUPLICATE KEY UPDATE status = VALUES(status), cod_modulo = VALUES(cod_modulo), cod_accion = VALUES(cod_accion);
+
+INSERT INTO rol_permiso (cod_rol_permiso, cor_rol, cod_permiso)
+VALUES (1, 1, 1)
+ON DUPLICATE KEY UPDATE cor_rol = VALUES(cor_rol), cod_permiso = VALUES(cod_permiso);
+
 USE sac;
+
+CREATE TABLE IF NOT EXISTS empresa (
+    nombre VARCHAR(200) NOT NULL,
+    direccion VARCHAR(250) NOT NULL,
+    telefono VARCHAR(20) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    descripcion_empresa VARCHAR(250) NOT NULL,
+    logo VARCHAR(250) DEFAULT NULL
+) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS categoria (
     cod_categoria INT NOT NULL AUTO_INCREMENT,

@@ -31,9 +31,25 @@ jobs:
     timeout-minutes: 10
     env:
       DB_HOST: 127.0.0.1
-      DB_USER: ci
-      DB_PASS: ci
+      DB_USER: root
+      DB_PASS: locust-ci-password
       DB_NAME: sac
+      LOCUST_CEDULA: CI00000001
+      LOCUST_COD_PROVEEDOR: "1"
+      LOCUST_COD_PRODUCTO: "1"
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: locust-ci-password
+          MYSQL_ROOT_HOST: "%"
+          MYSQL_DATABASE: sac
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --host=127.0.0.1 --user=root --password=$$MYSQL_ROOT_PASSWORD --silent"
+          --health-interval=10s --health-timeout=5s --health-retries=10
 
     steps:
       - name: Descargar código
@@ -46,8 +62,16 @@ jobs:
 
       - name: Instalar dependencias
         run: |
+          sudo apt-get update
+          sudo apt-get install --yes default-mysql-client
           python -m pip install --upgrade pip
           python -m pip install Flask mysql-connector-python python-dotenv requests bcrypt captcha reportlab openpyxl locust
+
+      - name: Inicializar base de pruebas
+        run: |
+          mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" < db/integration_test_schema.sql
+          mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" < db/procedimientoscompras.sql
+          python locust/seed_ci.py
 
       - name: Ejecutar carga local y acotada
         run: |
@@ -66,7 +90,7 @@ jobs:
 
           set +e
           python -m locust \
-            --locustfile locust/smoke.py \
+            --locustfile locust/compra.py \
             --headless \
             --host http://127.0.0.1:5000 \
             --users 2 \
