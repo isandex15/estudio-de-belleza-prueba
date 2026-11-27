@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{especialista_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    cedula: "76456336 "
+    especialista: ayudante
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta de JSON\",  () => { \r
+
+      \    pm.response.to.be.json;\r
+
+      \     } );\r
+
+      \r
+
+      pm.test(\"estado de corecto de registar especilista\", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      \  } );\r\n"
+    language: text/javascript
+order: 1000

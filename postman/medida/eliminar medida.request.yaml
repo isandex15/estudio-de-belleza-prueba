@@ -1,0 +1,23 @@
+$kind: http-request
+url: "{{unidadmedida_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    eliminar: "1"
+    cod_medida: "12"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta de JSON\", () =>{\r
+
+      pm.response.to.be.json;\r
+
+      \ });\r
+
+      pm.test(\"estado corecto de eliminar medida\", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      });\r\n"
+    language: text/javascript
+order: 4000

@@ -1,0 +1,82 @@
+name: Pipeline completa
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pruebas-unitarias:
+    name: Pytest unitario
+    uses: ./.github/workflows/test_build.yaml
+
+  pruebas-integracion:
+    name: Pytest integración
+    uses: ./.github/workflows/pruebas_integracion.yaml
+
+  playwright:
+    name: Todos los specs Playwright
+    uses: ./.github/workflows/playwright.yaml
+
+  locust:
+    name: Locust - ${{ matrix.locustfile }}
+    strategy:
+      fail-fast: false
+      matrix:
+        locustfile:
+          - categoria.py
+          - compra.py
+          - marca.py
+          - producto.py
+          - promocion.py
+          - proveedor.py
+          - tipoproducto.py
+          - tiposervicio.py
+    uses: ./.github/workflows/locust.yaml
+    with:
+      locustfile: ${{ matrix.locustfile }}
+
+  postman:
+    name: Colección Postman
+    uses: ./.github/workflows/postman.yaml
+
+  reporte-unificado:
+    name: XML consolidado
+    if: always()
+    needs:
+      - pruebas-unitarias
+      - pruebas-integracion
+      - playwright
+      - locust
+      - postman
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Descargar reportes de las suites
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          pattern: reporte-*
+          path: reportes-ci
+          merge-multiple: false
+
+      - name: Crear XML JUnit consolidado
+        run: python ci/merge_junit.py reportes-ci --output reportes-ci/reporte-unificado.xml
+
+      - name: Publicar XML consolidado
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-pruebas-completo
+          path: reportes-ci/reporte-unificado.xml
+          if-no-files-found: error

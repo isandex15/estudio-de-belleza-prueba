@@ -1,0 +1,35 @@
+$kind: http-request
+name: editar cliente
+url: "{{cliente_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    actualizar: "1"
+    cedula: "31657345"
+    nombre_usuario: keylis
+    apellido_usuario: garcia
+    telefono: "04126753421"
+    direccion: laraaaa
+    correo: key@gmail.com
+    cod_rol: "3"
+    stado: "0"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",()=>{\r
+
+      pm.response.to.be.json;\r
+
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"status de ediatr cliente\", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      \ });"
+    language: text/javascript
+order: 4562

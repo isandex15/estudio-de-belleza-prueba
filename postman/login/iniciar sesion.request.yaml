@@ -1,0 +1,26 @@
+$kind: http-request
+url: "{{base_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    login: "1"
+    cedula: "{{cedula}}"
+    password: "{{password}}"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Respuesta JSON\", () => {\r
+
+      \  pm.response.to.be.json;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Estado correcto se inicio sesion\", () => {\r
+
+      \  pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 4000

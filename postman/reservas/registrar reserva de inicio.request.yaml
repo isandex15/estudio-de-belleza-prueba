@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{reservas_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    cedula: "3196486"
+    fecha: 2026-11-25
+    hora: 09:00 am
+    cedula_especialista: "3123446"
+    servicio[]: "4"
+    producto[]: "8"
+    cantidad_producto[8]: "3"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",  ()=> {\r
+
+      \    pm.response.to.be.json;\r
+
+      \ });\r
+
+      \r
+
+      \ pm.test(\"estado corecto de registar reserva\",()=>{\r
+
+      \     pm.response.to.have.status(200);\r
+
+      \ } );"
+    language: text/javascript
+order: 3000

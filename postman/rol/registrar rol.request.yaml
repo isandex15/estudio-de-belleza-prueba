@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{rol_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    rol: publicista
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",  ()=> {\r
+
+      \    pm.response.to.be.json;\r
+
+      \ });\r
+
+      \r
+
+      \ pm.test(\"estado corecto de registar rol\",()=>{\r
+
+      \     pm.response.to.have.status(200);\r
+
+      \ } );"
+    language: text/javascript
+order: 1000

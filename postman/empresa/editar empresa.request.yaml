@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{empresa_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    actualizar: "1"
+    nombre: Estudio de belleza
+    direccion: barquisimeto
+    email: estu@gmail.com
+    telefono: "06234556"
+    descripcion_empresa: amor
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta de JSON\",  () =>{\r
+
+      pm.response.to.be.json;\r
+
+      \ });\r
+
+      \r
+
+      pm.test(\"estado corecto de editar empresa\", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      \     });"
+    language: text/javascript
+order: 1000

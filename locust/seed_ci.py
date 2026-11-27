@@ -12,7 +12,7 @@ if not cedula:
 if not github_env:
     raise RuntimeError("GITHUB_ENV es requerido para exportar la contraseña temporal.")
 
-password = secrets.token_urlsafe(18)
+password = os.environ.get("LOCUST_PASSWORD") or secrets.token_urlsafe(18)
 password_hash = bcrypt.hashpw(
     password.encode("utf-8"),
     bcrypt.gensalt(),

@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{presentacion_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    presentacion: bottela
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Respuesta JSON\", () => {\r
+
+      \  pm.response.to.be.json;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Estado correcto se verifico el endpoint de registrar presentacion \", () => {\r
+
+      \  pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 1000

@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{reserva_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    eliminar: "1"
+    cod_servicio: "91"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",  ()=> {\r
+
+      \    pm.response.to.be.json;\r
+
+      \ });\r
+
+      \r
+
+      \ pm.test(\"estado corecto de cancelar  reserva\",()=>{\r
+
+      \     pm.response.to.have.status(200);\r
+
+      \ } );"
+    language: text/javascript
+order: 4000

@@ -1,0 +1,32 @@
+$kind: http-request
+url: "{{cliente_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    cedula: "31657345"
+    nombre_usuario: key
+    apellido_usuario: garcia
+    telefono: "04126753423"
+    direccion: lara
+    correo: key@gmail.com
+    cod_rol: "3"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Respuesta JSON\", () => {\r
+
+      \  pm.response.to.be.json;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Estado correcto se verifico el endpoint de registrar cliente\",
+      () => {\r
+
+      \  pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 1000

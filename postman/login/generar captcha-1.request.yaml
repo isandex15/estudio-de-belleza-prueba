@@ -1,0 +1,25 @@
+$kind: http-request
+name: generar captcha
+url: "{{base_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    generar_captcha: "1"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Respuesta JSON\", () => {\r
+
+      \  pm.response.to.be.json;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Estado correcto se genero el captcha\", () => {\r
+
+      \  pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 1689

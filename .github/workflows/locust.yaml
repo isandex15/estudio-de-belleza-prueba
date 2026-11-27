@@ -1,25 +1,28 @@
 name: Locust
 
 on:
-  push:
-    paths:
-      - "app.py"
-      - "admin/**"
-      - "static/**"
-      - "templates/**"
-      - "locust/**"
-      - "run_playwright_server.py"
-      - ".github/workflows/locust.yaml"
-  pull_request:
-    paths:
-      - "app.py"
-      - "admin/**"
-      - "static/**"
-      - "templates/**"
-      - "locust/**"
-      - "run_playwright_server.py"
-      - ".github/workflows/locust.yaml"
+  workflow_call:
+    inputs:
+      locustfile:
+        description: Locust scenario file name
+        required: true
+        type: string
   workflow_dispatch:
+    inputs:
+      locustfile:
+        description: Locust scenario to execute
+        required: true
+        type: choice
+        default: compra.py
+        options:
+          - categoria.py
+          - compra.py
+          - marca.py
+          - producto.py
+          - promocion.py
+          - proveedor.py
+          - tipoproducto.py
+          - tiposervicio.py
 
 permissions:
   contents: read
@@ -35,8 +38,14 @@ jobs:
       DB_PASS: locust-ci-password
       DB_NAME: sac
       LOCUST_CEDULA: CI00000001
+      LOCUST_COD_CATEGORIA: "1"
+      LOCUST_COD_MARCA: "1"
       LOCUST_COD_PROVEEDOR: "1"
       LOCUST_COD_PRODUCTO: "1"
+      LOCUST_COD_UNIDAD: "1"
+      LOCUST_COD_TIPO_PRODUCTO: "1"
+      LOCUST_COD_PRESENTACION: "1"
+      LOCUST_COD_MEDIDA: "1"
 
     services:
       mysql:
@@ -90,7 +99,7 @@ jobs:
 
           set +e
           python -m locust \
-            --locustfile locust/compra.py \
+            --locustfile "locust/${{ inputs.locustfile }}" \
             --headless \
             --host http://127.0.0.1:5000 \
             --users 2 \
@@ -102,7 +111,7 @@ jobs:
 
           python locust/csv_to_junit.py \
             locust-report/locust_stats.csv \
-            locust-report/locust.xml
+            "locust-report/${{ inputs.locustfile }}.xml"
           REPORT_EXIT=$?
 
           if [ "$LOCUST_EXIT" -ne 0 ]; then
@@ -114,6 +123,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: reporte-locust-junit
-          path: locust-report/locust.xml
+          name: reporte-locust-${{ inputs.locustfile }}
+          path: locust-report/
           if-no-files-found: ignore

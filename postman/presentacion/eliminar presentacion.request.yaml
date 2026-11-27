@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{presentacion_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    eliminar: "1"
+    cod_presentacion: "9"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Respuesta JSON", () => {
+        pm.response.to.be.json;
+      });
+
+      pm.test("Estado correcto se elimino el presentacion", () => {
+        pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 2000

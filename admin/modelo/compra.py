@@ -29,7 +29,8 @@ class CompraModelo(Conexion):
             self.conexion.reconnect()
 
         return self.conexion
-        # =========================
+        
+    # =========================
     # VALIDACIONES
     # =========================
 
@@ -470,95 +471,7 @@ class CompraModelo(Conexion):
                 if cursor is not None:
                     cursor.close()
 
-    # =========================
-    # EDITAR COMPRA
-    # =========================
-    def editar(self, cod_compra, productos):
-
-        try:
-            conn = self.conn()
-            cursor = conn.cursor()
-
-            cursor.execute("""
-                SELECT cod_producto, cantidad
-                FROM detalle_compra
-                WHERE cod_compra = %s
-                ORDER BY cod_producto
-            """, (cod_compra,))
-            detalle_actual = sorted(
-                cursor.fetchall(),
-                key=lambda item: item[0]
-            )
-
-            for item in detalle_actual:
-                cursor.execute("""
-                    UPDATE producto
-                    SET stock = stock - %s
-                    WHERE cod_producto = %s
-                """, (item[1], item[0]))
-
-            cursor.execute("""
-                DELETE FROM detalle_compra
-                WHERE cod_compra = %s
-            """, (cod_compra,))
-
-            cursor.execute("""
-                UPDATE compra
-                SET fecha_compra = %s,
-                    total = %s,
-                    cod_proveedor = %s,
-                    status = %s
-                WHERE cod_compra = %s
-            """, (
-                self.__fecha_compra,
-                self.__total,
-                self.__cod_proveedor,
-                self.__status,
-                cod_compra
-            ))
-
-            for p in sorted(
-                (producto for producto in productos if producto),
-                key=lambda producto: int(producto.get("cod_producto", 0) or 0)
-            ):
-                cod_producto = int(p.get("cod_producto", 0) or 0)
-                cantidad = int(p.get("cantidad", 0) or 0)
-                precio = float(p.get("precio", 0) or 0)
-
-                if cod_producto <= 0 or cantidad <= 0:
-                    continue
-
-                cursor.execute("""
-                    INSERT INTO detalle_compra (
-                        cod_compra,
-                        cod_producto,
-                        cantidad,
-                        precio_unitario
-                    )
-                    VALUES (%s, %s, %s, %s)
-                """, (
-                    cod_compra,
-                    cod_producto,
-                    cantidad,
-                    precio
-                ))
-
-                cursor.execute("""
-                    UPDATE producto
-                    SET stock = stock + %s
-                    WHERE cod_producto = %s
-                """, (cantidad, cod_producto))
-
-            conn.commit()
-            cursor.close()
-
-            return 1
-
-        except Exception as e:
-            self.conn().rollback()
-            print("ERROR EDITAR COMPRA:", repr(e))
-            return 0
-
+    
     # =========================
     # CANCELAR COMPRA
     # =========================

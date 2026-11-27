@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{especialista_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    actualizar: "1"
+    cedula: "76456336"
+    especialista: ayudante
+    status: "0"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",  ()=> {\r
+
+      \    pm.response.to.be.json;\r
+
+      \ });\r
+
+      \r
+
+      \ pm.test(\"estado corecto de editar\",()=>{\r
+
+      \     pm.response.to.have.status(200);\r
+
+      \ } );"
+    language: text/javascript
+order: 2000

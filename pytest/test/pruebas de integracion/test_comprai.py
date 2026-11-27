@@ -130,25 +130,6 @@ def test_registrar(datos_compra, compra_registrada):
     assert _obtener_stock(modelo, cod_producto) == datos_compra["stock_inicial"] + 2
 
 
-def test_editar_compra(datos_compra, compra_registrada):
-    modelo = datos_compra["modelo"]
-    cod_compra = compra_registrada
-    cod_producto = datos_compra["cod_producto"]
-
-    modelo.fecha_compra = date.today().isoformat()
-    modelo.total = 33
-    modelo.cod_proveedor = datos_compra["cod_proveedor"]
-    modelo.status = 1
-    productos_editados = [
-        {"cod_producto": cod_producto, "cantidad": 3, "precio": 11}
-    ]
-
-    assert modelo.editar(cod_compra, productos_editados) == 1
-    compra_editada = modelo.obtener(cod_compra)
-    detalle_editado = modelo.obtener_detalle_compra(cod_compra)
-    assert float(compra_editada["total"]) == 33
-    assert detalle_editado[0]["cantidad"] == 3
-    assert _obtener_stock(modelo, cod_producto) == datos_compra["stock_inicial"] + 3
 
 
 def test_cancelar_compra(datos_compra, compra_registrada):

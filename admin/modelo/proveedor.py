@@ -52,7 +52,7 @@ class ProveedorModelo(Conexion):
 
     def validarNombre(self, nombre):
 
-        nombre = nombre.strip()
+        nombre = str(nombre or "").strip()
 
 
         if nombre == "":
@@ -84,7 +84,7 @@ class ProveedorModelo(Conexion):
 
     def validarApellido(self, apellido):
 
-        apellido = apellido.strip()
+        apellido = str(apellido or "").strip()
 
 
         if apellido == "":
@@ -116,7 +116,7 @@ class ProveedorModelo(Conexion):
 
     def validarRif(self, rif):
 
-        rif = rif.strip()
+        rif = str(rif or "").strip()
 
 
         if rif == "":
@@ -184,7 +184,7 @@ class ProveedorModelo(Conexion):
 
     def validarCorreo(self, correo):
 
-        correo = correo.strip()
+        correo = str(correo or "").strip()
 
 
         if correo == "":

@@ -1,0 +1,102 @@
+name: Postman
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  postman:
+    name: Colección Postman
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASS: postman-ci-password
+      DB_NAME: sac
+      LOCUST_CEDULA: "4723317"
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: postman-ci-password
+          MYSQL_ROOT_HOST: "%"
+          MYSQL_DATABASE: sac
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --host=127.0.0.1 --user=root --password=$$MYSQL_ROOT_PASSWORD --silent"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependencias de la aplicación
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes default-mysql-client
+          python -m pip install --upgrade pip
+          python -m pip install Flask mysql-connector-python python-dotenv requests bcrypt captcha reportlab openpyxl
+
+      - name: Inicializar base de pruebas
+        run: |
+          mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" < db/integration_test_schema.sql
+          mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" < db/procedimientoscompras.sql
+          python locust/seed_ci.py
+
+      - name: Configurar Node.js y Newman
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Instalar Newman
+        run: npm install --global newman
+
+      - name: Ejecutar colección Postman
+        run: |
+          mkdir -p postman-report
+          python run_playwright_server.py > postman-report/server.log 2>&1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true; wait "$SERVER_PID" 2>/dev/null || true' EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:5000/ > /dev/null; then
+              break
+            fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:5000/ > /dev/null
+
+          newman run "postman/collections/pruebas backend.postman_collection.json" \
+            --env-var "base_url=http://127.0.0.1:5000/admin?ruta=login" \
+            --env-var "cedula=$LOCUST_CEDULA" \
+            --env-var "password=$LOCUST_PASSWORD" \
+            --env-var "captcha_respuesta=AB12CD" \
+            --env-var "tiposervicio_url=http://127.0.0.1:5000/admin?ruta=tiposervicio" \
+            --env-var "compra_url=http://127.0.0.1:5000/admin?ruta=compra" \
+            --env-var "producto_url=http://127.0.0.1:5000/admin?ruta=producto" \
+            --env-var "tipoproducto_url=http://127.0.0.1:5000/admin?ruta=tipoproducto" \
+            --env-var "marca_url=http://127.0.0.1:5000/admin?ruta=marca" \
+            --env-var "categoria_url=http://127.0.0.1:5000/admin?ruta=categoria" \
+            --env-var "promo_url=http://127.0.0.1:5000/admin?ruta=promocion" \
+            --env-var "proveedor_url=http://127.0.0.1:5000/admin?ruta=proveedor" \
+            --reporters cli,junit \
+            --reporter-junit-export postman-report/newman.xml
+
+      - name: Guardar reportes de Postman
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-postman
+          path: postman-report/
+          if-no-files-found: ignore

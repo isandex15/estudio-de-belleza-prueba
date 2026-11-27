@@ -83,6 +83,10 @@ INSERT INTO usuario (cedula, status)
 VALUES ('CI00000001', 1)
 ON DUPLICATE KEY UPDATE status = VALUES(status);
 
+INSERT INTO usuario (cedula, status)
+VALUES ('4723317', 1)
+ON DUPLICATE KEY UPDATE status = VALUES(status);
+
 INSERT INTO rol (cod_rol, rol, status)
 VALUES (1, 'administrador', 1)
 ON DUPLICATE KEY UPDATE rol = VALUES(rol), status = VALUES(status);

@@ -1,0 +1,31 @@
+$kind: http-request
+url: "{{unidad_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    actualizar: "1"
+    cod_unidad: "7"
+    nombre_unidad: "8"
+    cod_presentacion: "10"
+    cod_medida: "8"
+    status: "0"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",()=>{\r
+
+      pm.response.to.be.json;\r
+
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"status de ediatr unidad\", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      \ });"
+    language: text/javascript
+order: 2000

@@ -1,0 +1,36 @@
+$kind: http-request
+url: "{{usuarios_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    cedula: "16641208"
+    nombre_usuario: katalella
+    apellido_usuario: lopes
+    telefono: "436675645"
+    direccion: barquisimeto
+    correo: amor@gmail.com
+    cod_rol: "2"
+    password: adty231
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta de JSON\",  () =>{\r
+
+      pm.response.to.be.json;\r
+
+      \r
+
+      \ });\r
+
+      \r
+
+      pm.test(\"Status  corecto de registar\", () => {\r
+
+      \r
+
+      \    pm.response.to.have.status(200);\r
+
+      \  });"
+    language: text/javascript
+order: 1000

@@ -11,7 +11,7 @@ def handle_request(ruta):
     # =====================================
     if request.method == "POST" and request.form.get("buscar"):
 
-        nombre_categoria = request.form.get("buscar", "").strip()
+        nombre_categoria = request.form.get("buscar").strip()
 
         resultado = modelo.buscar(nombre_categoria)
 

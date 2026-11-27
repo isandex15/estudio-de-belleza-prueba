@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{usuarios_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    eliminar: "1"
+    cedula: "16641208"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",()=>{\r
+
+      pm.response.to.be.json;\r
+
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"status de eliminar usuarios\", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      \ });"
+    language: text/javascript
+order: 4000

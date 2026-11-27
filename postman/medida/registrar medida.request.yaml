@@ -1,0 +1,25 @@
+$kind: http-request
+url: "{{unidadmedida_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    medida: caja
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Respuesta JSON\", () => {\r
+
+      \  pm.response.to.be.json;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"Estado correcto se verifico el endpoint de registrar medida \", () => {\r
+
+      \  pm.response.to.have.status(200);\r
+
+      });"
+    language: text/javascript
+order: 1000

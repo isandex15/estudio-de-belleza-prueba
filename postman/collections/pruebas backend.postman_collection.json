@@ -68,10 +68,6 @@
                   "value": "{{captcha_respuesta}}"
                 },
                 {
-                  "key": "login",
-                  "value": "1"
-                },
-                {
                   "key": "verificar_captcha",
                   "value": "1"
                 }
@@ -134,7 +130,7 @@
       "name": "tipo servicio",
       "item": [
         {
-          "name": "registrar ripo de servicio",
+          "name": "registrar tipo de servicio",
           "event": [
             {
               "listen": "test",
@@ -262,6 +258,69 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "ruta tipo de servicio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n\r\npm.test(\"Estado correcto se consulto el tipo de servicio\", () => {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{tiposervicio_url}}",
+              "host": [
+                "{{tiposervicio_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar tipo de servicio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta Json\", () => {\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de busqueda correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "buscar",
+                  "value": "1"
+                },
+                {
+                  "key": "resultado",
+                  "value": "hola"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{tiposervicio_url}}",
+              "host": [
+                "{{tiposervicio_url}}"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -296,12 +355,16 @@
                   "value": "12"
                 },
                 {
-                  "key": "proveedor",
-                  "value": "566788"
+                  "key": "cod_proveedor",
+                  "value": "2"
                 },
                 {
                   "key": "productos",
-                  "value": "1"
+                  "value": "[{\"cod_producto\":8,\"cantidad\":2,\"precio\":5}]"
+                },
+                {
+                  "key": "cod_compra",
+                  "value": "39"
                 }
               ]
             },
@@ -309,6 +372,1310 @@
               "raw": "{{compra_url}}",
               "host": [
                 "{{compra_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "cosultar compra",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\npm.test(\"Estado correcto se consulto la compra\", () => {\r\n  pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{compra_url}}",
+              "host": [
+                "{{compra_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar compra",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta Json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado de eliminar compra correcto\", () =>{\r\n    pm.response.to.have.status(200);\r\n})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "eliminar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_compra",
+                  "value": "37653"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{compra_url}}",
+              "host": [
+                "{{compra_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "producto",
+      "item": [
+        {
+          "name": "consultar producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado de la consulta de compra correcto\", () => {\r\n    pm.response.to.have.status(200);\r\n})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{producto_url}}",
+              "host": [
+                "{{producto_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar producto",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "registrar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_producto",
+                  "value": "jabon"
+                },
+                {
+                  "key": "precio_producto",
+                  "value": "15"
+                },
+                {
+                  "key": "stock",
+                  "value": "7"
+                },
+                {
+                  "key": "cod_produto",
+                  "value": "15"
+                },
+                {
+                  "key": "cod_categoria",
+                  "value": "4"
+                },
+                {
+                  "key": "cod_marca",
+                  "value": "4"
+                },
+                {
+                  "key": "cod_unidad",
+                  "value": "7"
+                },
+                {
+                  "key": "cod_tipo_producto",
+                  "value": "3"
+                },
+                {
+                  "key": "fecha_vencimiento",
+                  "value": "2027-11-26"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{producto_url}}",
+              "host": [
+                "{{producto_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta Json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de la busqueda correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "buscar",
+                  "value": "1"
+                },
+                {
+                  "key": "resultado",
+                  "value": "crema"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{producto_url}}",
+              "host": [
+                "{{producto_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta de Json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de elimar producto correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "eliminar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_producto",
+                  "value": "14"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{producto_url}}",
+              "host": [
+                "{{producto_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Editar producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta Json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado de editar producto correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n    });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "actualizar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_compra",
+                  "value": "14"
+                },
+                {
+                  "key": "cod_categoria",
+                  "value": "4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{producto_url}}",
+              "host": [
+                "{{producto_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "tipo producto",
+      "item": [
+        {
+          "name": "registrar tipo producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado de registrar tipo de producto correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "registrar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_tipo_producto",
+                  "value": "barnis"
+                },
+                {
+                  "key": "cod_tipo_producto",
+                  "value": "4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{tipoproducto_url}}",
+              "host": [
+                "{{tipoproducto_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "consultar tipo de producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado de la consulta de tipo de porducto correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{tipoproducto_url}}",
+              "host": [
+                "{{tipoproducto_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar tipo de producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de la busqueda de tipo de producto correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "buscar",
+                  "value": "1"
+                },
+                {
+                  "key": "resultado",
+                  "value": "barnis"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{tipoproducto_url}}",
+              "host": [
+                "{{tipoproducto_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editar tipo de producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de actualizar tipo de producto correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "actualizar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_tipo_producto",
+                  "value": "varnis"
+                },
+                {
+                  "key": "cod_tipo_producto",
+                  "value": "4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{tipoproducto_url}}",
+              "host": [
+                "{{tipoproducto_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar tipo de producto",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"Estado de elimar tipo de producto correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "eliminar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_tipo_producto",
+                  "value": "4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{tipoproducto_url}}",
+              "host": [
+                "{{tipoproducto_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "marca",
+      "item": [
+        {
+          "name": "consultar marca",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"estado de la consulta de marca correcto\", ()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{marca_url}}",
+              "host": [
+                "{{marca_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar marca",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de regitrar marcca correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "registrar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_marca",
+                  "value": "Head and shouelder"
+                },
+                {
+                  "key": "cod_marca",
+                  "value": "6"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{marca_url}}",
+              "host": [
+                "{{marca_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar marca",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de buscar marca correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "buscar",
+                  "value": "1"
+                },
+                {
+                  "key": "resultado",
+                  "value": "pantene"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{marca_url}}",
+              "host": [
+                "{{marca_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editar marca",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de actualizar marca correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "actualizar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_marca",
+                  "value": "head"
+                },
+                {
+                  "key": "cod_marca",
+                  "value": "6"
+                },
+                {
+                  "key": "status",
+                  "value": "1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{marca_url}}",
+              "host": [
+                "{{marca_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar marca",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de elimar marca correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "eliminar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_marca",
+                  "value": "6"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{marca_url}}",
+              "host": [
+                "{{marca_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "categoria",
+      "item": [
+        {
+          "name": "consultar categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n\r\npm.test(\"estado de consultar categoria correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{categoria_url}}",
+              "host": [
+                "{{categoria_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de buscar categoria correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "buscar",
+                  "value": "1"
+                },
+                {
+                  "key": "resultado",
+                  "value": "pelo"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{categoria_url}}",
+              "host": [
+                "{{categoria_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de registrar categoria correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "registrar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_categoria",
+                  "value": "10"
+                },
+                {
+                  "key": "nombre_categoria",
+                  "value": "facial"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{categoria_url}}",
+              "host": [
+                "{{categoria_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editar categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de estado de categoria correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "actualizar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_categoria",
+                  "value": "cabello"
+                },
+                {
+                  "key": "cod_categoria",
+                  "value": "4"
+                },
+                {
+                  "key": "status",
+                  "value": "1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{categoria_url}}",
+              "host": [
+                "{{categoria_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar categoria",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de eliminar categoria correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "eliminar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_categoria",
+                  "value": "4"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{categoria_url}}",
+              "host": [
+                "{{categoria_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "promocion",
+      "item": [
+        {
+          "name": "consultar promocion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "\r\n\r\npm.test(\"estado de cosultar promocion correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{promo_url}}",
+              "host": [
+                "{{promo_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar promocion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de buscar promocion correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "buscar",
+                  "value": "1"
+                },
+                {
+                  "key": "resultado",
+                  "value": "septiembre promo"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{promo_url}}",
+              "host": [
+                "{{promo_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar promocion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de registrar promocion correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "registrar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_promo",
+                  "value": "descuento"
+                },
+                {
+                  "key": "descripcion_promo",
+                  "value": "descuento"
+                },
+                {
+                  "key": "inicio_promo",
+                  "value": "2026-11-26"
+                },
+                {
+                  "key": "fin_promo",
+                  "value": "2026-11-27"
+                },
+                {
+                  "key": "descuento",
+                  "value": "20"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{promo_url}}",
+              "host": [
+                "{{promo_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editar promo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de editar promocion correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "actualizar",
+                  "value": "1"
+                },
+                {
+                  "key": "nombre_promo",
+                  "value": "descuentoo"
+                },
+                {
+                  "key": "cod_promo",
+                  "value": "1"
+                },
+                {
+                  "key": "descuento",
+                  "value": "10"
+                },
+                {
+                  "key": "inicio_promo",
+                  "value": "2026-11-27"
+                },
+                {
+                  "key": "fin_promo",
+                  "value": "2026-11-28"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{promo_url}}",
+              "host": [
+                "{{promo_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar promocion",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\", ()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de eliminar promocion correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "eliminar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_promo",
+                  "value": "1"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{promo_url}}",
+              "host": [
+                "{{promo_url}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "proveedor",
+      "item": [
+        {
+          "name": "cosultar proveedor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Estado de consultar proveedor correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": []
+            },
+            "url": {
+              "raw": "{{proveedor_url}}",
+              "host": [
+                "{{proveedor_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "buscar proveedor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\",()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de buscar proveedor correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "buscar",
+                  "value": "1"
+                },
+                {
+                  "key": "resultado",
+                  "value": "566788"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{proveedor_url}}",
+              "host": [
+                "{{proveedor_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "registrar proveedor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\",()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de registrar proveedor correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "registrar",
+                  "value": "1"
+                },
+                {
+                  "key": "cedula",
+                  "value": "0974314"
+                },
+                {
+                  "key": "nombre",
+                  "value": "juan"
+                },
+                {
+                  "key": "apellido",
+                  "value": "suarez"
+                },
+                {
+                  "key": "rif",
+                  "value": "j30674823"
+                },
+                {
+                  "key": "telefono",
+                  "value": "04123338821"
+                },
+                {
+                  "key": "correo",
+                  "value": "juan@gmail.com"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{proveedor_url}}",
+              "host": [
+                "{{proveedor_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "editar proveedor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\",()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de actualizar proveedor correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "actualizar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_proveedor",
+                  "value": "8"
+                },
+                {
+                  "key": "status",
+                  "value": "1"
+                },
+                {
+                  "key": "cedula",
+                  "value": "1234874"
+                },
+                {
+                  "key": "nombre",
+                  "value": "asfa"
+                },
+                {
+                  "key": "apellido",
+                  "value": "sadvsga"
+                },
+                {
+                  "key": "correo",
+                  "value": "lucas@gmail.com"
+                },
+                {
+                  "key": "rif",
+                  "value": "V12345678"
+                },
+                {
+                  "key": "telefono",
+                  "value": "04121234567"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{proveedor_url}}",
+              "host": [
+                "{{proveedor_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "eliminar proveedor",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Respuesta json\",()=>{\r\n    pm.response.to.be.json;\r\n});\r\n\r\npm.test(\"estado de eliminar proveedor correcto\",()=>{\r\n    pm.response.to.have.status(200);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "eliminar",
+                  "value": "1"
+                },
+                {
+                  "key": "cod_proveedor",
+                  "value": "5"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{proveedor_url}}",
+              "host": [
+                "{{proveedor_url}}"
               ]
             }
           },
@@ -325,6 +1692,30 @@
     {
       "key": "compra_url",
       "value": "http://localhost:5000/admin?ruta=compra"
+    },
+    {
+      "key": "producto_url",
+      "value": ""
+    },
+    {
+      "key": "tipoproducto_url",
+      "value": ""
+    },
+    {
+      "key": "marca_url",
+      "value": ""
+    },
+    {
+      "key": "categoria_url",
+      "value": ""
+    },
+    {
+      "key": "promo_url",
+      "value": ""
+    },
+    {
+      "key": "proveedor_url",
+      "value": ""
     }
   ]
 }

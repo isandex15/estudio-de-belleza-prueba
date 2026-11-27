@@ -1,0 +1,28 @@
+$kind: http-request
+url: "{{unidadmedida_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    actualizar: "1"
+    cod_medida: "10"
+    medida: kilo
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",()=>{\r
+
+      pm.response.to.be.json;\r
+
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"status de ediatr medida\", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      \ });"
+    language: text/javascript
+order: 2000

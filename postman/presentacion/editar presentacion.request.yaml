@@ -1,0 +1,29 @@
+$kind: http-request
+url: "{{presentacion_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    actualizar: "1"
+    cod_presentacion: "9"
+    presentacion: amor
+    status: "1"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta JSON\",()=>{\r
+
+      pm.response.to.be.json;\r
+
+      \r
+
+      });\r
+
+      \r
+
+      pm.test(\"status de ediatar presentacion\", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      \ });"
+    language: text/javascript
+order: 4562

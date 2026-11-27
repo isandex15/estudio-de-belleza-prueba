@@ -1,24 +1,7 @@
 name: Playwright
 
 on:
-  push:
-    paths:
-      - "app.py"
-      - "admin/**"
-      - "static/**"
-      - "templates/**"
-      - "playwright/**"
-      - "run_playwright_server.py"
-      - ".github/workflows/playwright.yaml"
-  pull_request:
-    paths:
-      - "app.py"
-      - "admin/**"
-      - "static/**"
-      - "templates/**"
-      - "playwright/**"
-      - "run_playwright_server.py"
-      - ".github/workflows/playwright.yaml"
+  workflow_call:
   workflow_dispatch:
 
 permissions:
@@ -28,9 +11,28 @@ jobs:
   playwright:
     name: Pruebas Playwright (Chromium)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 45
     env:
       CI: "true"
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASS: ci-root-password
+      DB_NAME: sac
+      LOCUST_CEDULA: "4723317"
+      LOCUST_PASSWORD: admin123
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ci-root-password
+          MYSQL_ROOT_HOST: "%"
+          MYSQL_DATABASE: sac
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping --host=127.0.0.1 --user=root --password=$$MYSQL_ROOT_PASSWORD --silent"
+          --health-interval=10s --health-timeout=5s --health-retries=10
 
     steps:
       - name: Descargar código
@@ -43,8 +45,16 @@ jobs:
 
       - name: Instalar dependencias de la aplicación
         run: |
+          sudo apt-get update
+          sudo apt-get install --yes default-mysql-client
           python -m pip install --upgrade pip
           python -m pip install Flask mysql-connector-python python-dotenv requests bcrypt captcha reportlab openpyxl
+
+      - name: Inicializar base de pruebas
+        run: |
+          mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" < db/integration_test_schema.sql
+          mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" < db/procedimientoscompras.sql
+          python locust/seed_ci.py
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
@@ -61,11 +71,11 @@ jobs:
         working-directory: playwright
         run: npx playwright install --with-deps chromium
 
-      - name: Ejecutar pruebas de humo
+      - name: Ejecutar todas las pruebas Playwright
         working-directory: playwright
         run: |
           mkdir -p test-results
-          npm run test:ci
+          npm test -- --project=chromium
 
       - name: Guardar reporte XML de Playwright
         if: always()

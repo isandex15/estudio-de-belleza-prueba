@@ -1,0 +1,17 @@
+$kind: collection
+description: ""
+variables:
+  cliente_url: ""
+  presentacion_url: ""
+  unidadmedida_url: ""
+  empresa_url: ""
+  rol_url: ""
+  especialista_url: ""
+  unidad_url: ""
+  usuarios_url: ""
+  reservas_url: ""
+  reserva_url: ""
+  base_url: ""
+  captcha_respuesta: ""
+  cedula: ""
+  password: ""

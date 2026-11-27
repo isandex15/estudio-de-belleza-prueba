@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{unidad_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    nombre_unidad: "5"
+    cod_presentacion: "11"
+    cod_medida: "11"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta de JSON\",()=>{\r
+
+      pm.response.to.be.json;\r
+
+      });\r
+
+      \r
+
+      pm.test(\"status corecto de registar unidad \", () => {\r
+
+      \    pm.response.to.have.status(200);\r
+
+      \ });"
+    language: text/javascript
+order: 1000

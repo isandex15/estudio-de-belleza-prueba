@@ -1,0 +1,20 @@
+$kind: http-request
+url: "{{cliente_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    eliminar: "1"
+    cedula: "31657345"
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Respuesta JSON", () => {
+        pm.response.to.be.json;
+      });
+
+      pm.test("Estado correcto se elimino el cliente", () => {
+        pm.response.to.have.status(200);
+      });
+    language: text/javascript
+order: 2000

@@ -1,0 +1,30 @@
+$kind: http-request
+url: "{{empresa_url}}"
+method: POST
+body:
+  type: urlencoded
+  content:
+    registrar: "1"
+    nombre: Estudio de bellez
+    direccion: lara
+    telefono: "0965444444"
+    email: empre@gmail.com
+    descripcion_empresa: lo mejor
+    fecha_actualizacion: 2026-11-25
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"respuesta de JSON\",  ()=> { \r
+
+      \    pm.response.to.be.json;\r
+
+      \     } );\r
+
+      \r
+
+      \ pm.test(\"estado corecto de regisyat en presa\",()=> { \r
+
+      pm.response.to.have.status(200) \r
+
+      \ }) ;   "
+    language: text/javascript
+order: 2000
