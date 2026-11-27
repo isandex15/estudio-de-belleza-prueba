@@ -36,9 +36,9 @@ DEALLOCATE PREPARE pago_index_stmt;
  
  
  
---PROCEDIMIENTOS ALMACENADOS!!! 
+-- PROCEDIMIENTOS ALMACENADOS!!!
  
---Procedimiento Almacenado para registrar pago completo (modulo pagos) 
+-- Procedimiento Almacenado para registrar pago completo (modulo pagos)
  
 DELIMITER // 
  
