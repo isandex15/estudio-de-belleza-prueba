@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { abrirModulo, iniciarSesion } from '../pruebas de interfaz/auth';
+import { abrirModulo, iniciarSesion } from '../auth';
 
 test('PagosPersonal: consultar registros y validar porcentaje mínimo', async ({
   page,

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { abrirModulo, iniciarSesion } from '../pruebas de interfaz/auth';
+import { abrirModulo, iniciarSesion } from '../auth';
 import { baseUrl, uniqueLetters } from './helpers';
 
 type AlertResponse = {

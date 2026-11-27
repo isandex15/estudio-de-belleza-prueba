@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { abrirModulo, iniciarSesion } from '../pruebas de interfaz/auth';
+import { abrirModulo, iniciarSesion } from '../auth';
 
 test('Pagos: consultar registros y validar el formulario sin crear transacciones', async ({
   page,
