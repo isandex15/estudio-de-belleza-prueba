@@ -1,7 +1,18 @@
-DROP INDEX IF EXISTS idx_especialista_nombre ON usuario;
-
-CREATE INDEX idx_especialista_nombre
-ON usuario (nombre_usuario);
+SET @especialista_index_exists = (
+    SELECT COUNT(*)
+    FROM information_schema.statistics
+    WHERE table_schema = DATABASE()
+      AND table_name = 'usuario'
+      AND index_name = 'idx_especialista_nombre'
+);
+SET @especialista_index_sql = IF(
+    @especialista_index_exists = 0,
+    'ALTER TABLE usuario ADD INDEX idx_especialista_nombre (nombre_usuario)',
+    'SELECT 1'
+);
+PREPARE especialista_index_stmt FROM @especialista_index_sql;
+EXECUTE especialista_index_stmt;
+DEALLOCATE PREPARE especialista_index_stmt;
 
 DELIMITER // 
 

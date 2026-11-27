@@ -1,13 +1,37 @@
 -- Indices  
 -- usuarios y pagos. 
 
-DROP INDEX IF EXISTS idx_usuario_cedula_cod_rol ON seguridad.usuario;
-ALTER TABLE seguridad.usuario 
-    ADD INDEX idx_usuario_cedula_cod_rol (cedula, cod_rol); 
+SET @usuario_index_exists = (
+    SELECT COUNT(*)
+    FROM information_schema.statistics
+    WHERE table_schema = 'seguridad'
+      AND table_name = 'usuario'
+      AND index_name = 'idx_usuario_cedula_cod_rol'
+);
+SET @usuario_index_sql = IF(
+    @usuario_index_exists = 0,
+    'ALTER TABLE seguridad.usuario ADD INDEX idx_usuario_cedula_cod_rol (cedula, cod_rol)',
+    'SELECT 1'
+);
+PREPARE usuario_index_stmt FROM @usuario_index_sql;
+EXECUTE usuario_index_stmt;
+DEALLOCATE PREPARE usuario_index_stmt;
 
-DROP INDEX IF EXISTS idx_pago_fecha_cod_servicio ON pago;
-ALTER TABLE pago 
-    ADD INDEX idx_pago_fecha_cod_servicio (fecha_pago, cod_servicio); 
+SET @pago_index_exists = (
+    SELECT COUNT(*)
+    FROM information_schema.statistics
+    WHERE table_schema = DATABASE()
+      AND table_name = 'pago'
+      AND index_name = 'idx_pago_fecha_cod_servicio'
+);
+SET @pago_index_sql = IF(
+    @pago_index_exists = 0,
+    'ALTER TABLE pago ADD INDEX idx_pago_fecha_cod_servicio (fecha_pago, cod_servicio)',
+    'SELECT 1'
+);
+PREPARE pago_index_stmt FROM @pago_index_sql;
+EXECUTE pago_index_stmt;
+DEALLOCATE PREPARE pago_index_stmt;
  
  
  
