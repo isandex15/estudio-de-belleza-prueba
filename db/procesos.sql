@@ -36,13 +36,9 @@ DEALLOCATE PREPARE pago_index_stmt;
  
  
  
--- PROCEDIMIENTOS ALMACENADOS!!!
+DELIMITER //
  
--- Procedimiento Almacenado para registrar pago completo (modulo pagos)
- 
-DELIMITER // 
- 
-DROP PROCEDURE IF EXISTS sp_registrar_pago_completo // 
+DROP PROCEDURE IF EXISTS sp_registrar_pago_completo //
 
 CREATE PROCEDURE sp_registrar_pago_completo( 
     IN p_monto FLOAT, 
@@ -70,12 +66,11 @@ BEGIN
     COMMIT; 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
--- Procedimiento almacenado para guardar un pago personal 
-DELIMITER // 
+DELIMITER //
 
-DROP PROCEDURE IF EXISTS sp_guardar_pago_personal // 
+DROP PROCEDURE IF EXISTS sp_guardar_pago_personal //
 
 CREATE PROCEDURE sp_guardar_pago_personal( 
     IN p_fecha_pago DATE, 
@@ -116,10 +111,8 @@ BEGIN
     ); 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
--- Procedimiento transaccional para procesar la nómina de un personal 
-DELIMITER // 
 DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_procesar_nomina_personal //
@@ -176,10 +169,9 @@ BEGIN
 END //
 
 DELIMITER ;
--- Procedimiento almacenado para respaldar mantenimiento en seguridad.mantenimiento 
-DELIMITER // 
+DELIMITER //
 
-DROP PROCEDURE IF EXISTS sp_respaldar_mantenimiento // 
+DROP PROCEDURE IF EXISTS sp_respaldar_mantenimiento //
 
 CREATE PROCEDURE sp_respaldar_mantenimiento( 
     IN p_nombre_archivo VARCHAR(250), 
@@ -205,15 +197,12 @@ BEGIN
     ); 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
  
--- FUNCIONES!!! 
- 
--- Función para obtener la última tasa registrada de una moneda 
-DELIMITER // 
+DELIMITER //
 
-DROP FUNCTION IF EXISTS fn_obtener_tasa_moneda // 
+DROP FUNCTION IF EXISTS fn_obtener_tasa_moneda //
  
 CREATE FUNCTION fn_obtener_tasa_moneda(p_cod_moneda INT) 
 RETURNS FLOAT 
@@ -231,13 +220,12 @@ BEGIN
     RETURN COALESCE(v_tasa, 0); 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
  
--- Función para calcular la comisión del servicio basada en un porcentaje del monto del servicio 
-DELIMITER // 
+DELIMITER //
  
-DROP FUNCTION IF EXISTS fn_calcular_comision_servicio // 
+DROP FUNCTION IF EXISTS fn_calcular_comision_servicio //
  
 CREATE FUNCTION fn_calcular_comision_servicio(p_monto_servicio FLOAT, p_porcentaje_especialista INT)  
 RETURNS FLOAT 
@@ -248,13 +236,12 @@ BEGIN
     RETURN v_pago_final; 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
  
--- Función para calcular el total de comisiones del personal por especialista y día 
-DELIMITER // 
+DELIMITER //
  
-DROP FUNCTION IF EXISTS fn_calcular_total_pago_personal // 
+DROP FUNCTION IF EXISTS fn_calcular_total_pago_personal //
  
 CREATE FUNCTION fn_calcular_total_pago_personal( 
     p_cedula_especialista VARCHAR(12), 
@@ -293,7 +280,7 @@ BEGIN
     RETURN v_total_pago; 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
  
 -- cada tipo de servicio seleccionado equivale a una unidad 
@@ -302,10 +289,9 @@ SET cantidad_servicio = '1'
 WHERE CAST(cantidad_servicio AS DECIMAL(10,2)) <= 0; 
  
  
--- Asegurar existencia de un usuario 'sistema' para registros desde triggers 
-DELIMITER // 
+DELIMITER //
 
-DROP PROCEDURE IF EXISTS sp_asegurar_usuario_sistema // 
+DROP PROCEDURE IF EXISTS sp_asegurar_usuario_sistema //
 
 CREATE PROCEDURE sp_asegurar_usuario_sistema() 
 BEGIN 
@@ -317,17 +303,15 @@ BEGIN
     END IF; 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
 -- Ejecutar aseguramiento del usuario (al importar este SQL, importante, KLEY) 
 CALL sp_asegurar_usuario_sistema(); 
  
  
--- TRIGGERS !!! 
--- Trigger para guardar precio moneda al registrar un nuevo cambio  
-DELIMITER // 
+DELIMITER //
 
-DROP TRIGGER IF EXISTS tg_guardar_precio_moneda_reg // 
+DROP TRIGGER IF EXISTS tg_guardar_precio_moneda_reg //
 
 CREATE TRIGGER tg_guardar_precio_moneda_reg 
 AFTER INSERT ON cambio 
@@ -343,13 +327,12 @@ BEGIN
     ); 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
  
--- Trigger para guardar precio moneda al actualizar un cambio  
-DELIMITER // 
+DELIMITER //
 
-DROP TRIGGER IF EXISTS tg_guardar_precio_moneda_act // 
+DROP TRIGGER IF EXISTS tg_guardar_precio_moneda_act //
 
 CREATE TRIGGER tg_guardar_precio_moneda_act 
 AFTER UPDATE ON cambio 
@@ -365,7 +348,7 @@ BEGIN
     ); 
 END // 
  
-DELIMITER ; 
+DELIMITER ;
  
 -- VISTAS 
 

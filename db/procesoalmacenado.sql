@@ -14,7 +14,7 @@ PREPARE especialista_index_stmt FROM @especialista_index_sql;
 EXECUTE especialista_index_stmt;
 DEALLOCATE PREPARE especialista_index_stmt;
 
-DELIMITER // 
+DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_registrar_rol//
 
@@ -26,10 +26,10 @@ BEGIN
     VALUES (p_rol, 1); 
 END // 
 
-DELIMITER ; 
+DELIMITER ;
 
 
-DELIMITER // 
+DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_guardar_especialista//
 
@@ -52,10 +52,10 @@ BEGIN
 
 END // 
 
-DELIMITER ; 
+DELIMITER ;
 
 
-DELIMITER // 
+DELIMITER //
 
 DROP PROCEDURE IF EXISTS sac.sp_procesar_reservas_8pm//
 
@@ -177,10 +177,10 @@ BEGIN
 
 END// 
 
-DELIMITER ; 
+DELIMITER ;
 
 
-DELIMITER // 
+DELIMITER //
 
 DROP PROCEDURE IF EXISTS sac.sp_registrar_reserva//
 
@@ -603,10 +603,10 @@ BEGIN
 
 END// 
 
-DELIMITER ; 
+DELIMITER ;
 
 
-DELIMITER // 
+DELIMITER //
 
 DROP TRIGGER IF EXISTS sac.tg_registrar_conteo_stock//
 
@@ -653,10 +653,10 @@ BEGIN
 
 END// 
 
-DELIMITER ; 
+DELIMITER ;
 
 
-DELIMITER // 
+DELIMITER //
 
 DROP TRIGGER IF EXISTS sac.tg_descontar_stock//
 
@@ -745,7 +745,7 @@ BEGIN
 
 END// 
 
-DELIMITER ; 
+DELIMITER ;
 
 
 DROP VIEW IF EXISTS vista_clientes_activos; 
