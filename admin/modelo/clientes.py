@@ -22,8 +22,20 @@ class ClientesModelo(Conexion):
         self.__fecha_registro = None
 
     def validarCliente(self, datos):
+        cedula = str(datos.get("cedula") or "").strip()
+        apellido = str(datos.get("apellido_usuario") or "").strip()
+        telefono = str(datos.get("telefono") or "").strip()
+        correo = str(datos.get("correo") or "").strip()
 
-        if re.search(r'[^0-9]', datos.get("cedula", "")):
+        if not cedula:
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Datos inválidos",
+                "text": "La cédula es obligatoria."
+            }
+
+        if re.search(r'[^0-9]', cedula):
             return {
                 "status": False,
                 "icon": "warning",
@@ -31,7 +43,15 @@ class ClientesModelo(Conexion):
                 "text": "La cédula solo puede contener números."
             }
 
-        if re.search(r'[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]', datos.get("apellido_usuario", "")):
+        if not telefono:
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Datos inválidos",
+                "text": "El teléfono es obligatorio."
+            }
+
+        if re.search(r'[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]', apellido):
             return {
                 "status": False,
                 "icon": "warning",
@@ -39,7 +59,7 @@ class ClientesModelo(Conexion):
                 "text": "El apellido no puede contener números ni caracteres especiales."
             }
 
-        if re.search(r'[^0-9]', datos.get("telefono", "")):
+        if re.search(r'[^0-9]', telefono):
             return {
                 "status": False,
                 "icon": "warning",
@@ -49,12 +69,20 @@ class ClientesModelo(Conexion):
 
         patron = r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'
 
-        if not re.match(patron, datos.get("correo", "")):
+        if not correo:
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Datos inválidos",
+                "text": "El correo electrónico es obligatorio."
+            }
+
+        if not re.fullmatch(patron, correo):
             return {
                 "status": False,
                 "icon": "warning",
                 "title": "Correo inválido",
-                "text": "Debe ingresar un correo electrónico válido."
+                "text": "El correo electrónico no es válido."
             }
 
         return {"status": True}    

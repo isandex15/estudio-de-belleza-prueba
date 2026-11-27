@@ -35,7 +35,13 @@ class PresentacionControlador:
         # =========================
         if request.method == "POST" and request.form.get("registrar"):
 
-            modelo.presentacion = request.form.get("presentacion")
+            presentacion = request.form.get("presentacion")
+            validar = modelo.validarPresentacion(presentacion)
+
+            if not validar["status"]:
+                return jsonify(validar)
+
+            modelo.presentacion = presentacion
 
             resul = modelo.registrar()
 
@@ -58,8 +64,14 @@ class PresentacionControlador:
         # =========================
         if request.method == "POST" and request.form.get("actualizar"):
 
+            presentacion = request.form.get("presentacion")
+            validar = modelo.validarPresentacion(presentacion)
+
+            if not validar["status"]:
+                return jsonify(validar)
+
             modelo.cod_presentacion = request.form.get("cod_presentacion")
-            modelo.presentacion = request.form.get("presentacion")
+            modelo.presentacion = presentacion
             modelo.status = request.form.get("status")
 
             resul = modelo.editar()

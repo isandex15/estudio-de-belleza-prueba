@@ -24,14 +24,15 @@ def handle_request(ruta):
         if request.method == "POST" and request.form.get("registrar"):
 
             especialista = request.form.get("especialista")
+            cedula = request.form.get("cedula")
 
-            validar = modelo.validarEspecialidad(especialista)
+            validar = modelo.validarEspecialidad(especialista, cedula)
 
             if not validar["status"]:
                 return jsonify(validar)
 
             modelo.especialista = especialista
-            modelo.cedula = request.form.get("cedula")
+            modelo.cedula = cedula
 
             resul = modelo.registrar()
 
@@ -50,8 +51,15 @@ def handle_request(ruta):
 
         if request.method == "POST" and request.form.get("actualizar"):
 
-            modelo.cedula = request.form.get("cedula")
-            modelo.especialista = request.form.get("especialista")
+            especialista = request.form.get("especialista")
+            cedula = request.form.get("cedula")
+            validar = modelo.validarEspecialidad(especialista, cedula)
+
+            if not validar["status"]:
+                return jsonify(validar)
+
+            modelo.cedula = cedula
+            modelo.especialista = especialista
             modelo.status = request.form.get("status")
 
             resul = modelo.editar()

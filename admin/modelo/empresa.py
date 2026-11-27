@@ -23,6 +23,29 @@ class EmpresaModelo(Conexion):
     def validarEmpresa(self, nombre, direccion, email, telefono, descripcion, logo):
 
         errores = []
+        nombre = str(nombre or "").strip()
+        direccion = str(direccion or "").strip()
+        email = str(email or "").strip()
+        telefono = str(telefono or "").strip()
+        descripcion = str(descripcion or "").strip()
+
+        if not nombre:
+            errores.append("• El nombre de la empresa es obligatorio.")
+
+        if not direccion:
+            errores.append("• La dirección es obligatoria.")
+
+        if not email:
+            errores.append("• El correo electrónico es obligatorio.")
+
+        if not telefono:
+            errores.append("• El teléfono es obligatorio.")
+
+        if not descripcion:
+            errores.append("• La descripción de la empresa es obligatoria.")
+
+        if not logo or not getattr(logo, "filename", ""):
+            errores.append("• El logo de la empresa es obligatorio.")
 
         # Nombre (letras, espacios y signos. No números)
         if nombre and re.search(r'\d', nombre):
@@ -40,7 +63,7 @@ class EmpresaModelo(Conexion):
             errores.append("• El teléfono solo puede contener números.")
 
         # Logo
-        if logo and logo.filename:
+        if logo and getattr(logo, "filename", ""):
 
             extension = splitext(logo.filename)[1].lower()
 

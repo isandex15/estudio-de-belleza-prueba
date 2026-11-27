@@ -1,3 +1,4 @@
+import os
 import sys
 from pathlib import Path
 
@@ -21,11 +22,20 @@ _REQUIRED_ROUTINES = {
 
 @pytest.fixture(scope="session")
 def integration_test_database():
-    if DB_NAME != "sac_test" or DB_SEGURIDAD_NAME != "seguridad_test":
+    isolated_ci_mysql = (
+        os.getenv("GITHUB_ACTIONS") == "true"
+        and os.getenv("CI_MYSQL_SERVICE") == "true"
+        and DB_HOST == "127.0.0.1"
+        and DB_NAME == "sac"
+        and DB_SEGURIDAD_NAME == "seguridad"
+    )
+    isolated_test_databases = (
+        DB_NAME == "sac_test" and DB_SEGURIDAD_NAME == "seguridad_test"
+    )
+    if not (isolated_ci_mysql or isolated_test_databases):
         pytest.fail(
-            "Prueba detenida por seguridad: configura DB_NAME con la base de "
-            "datos aislada de pruebas. El esquema de seguridad se seleccionará "
-            "automáticamente."
+            "Pruebas detenidas por seguridad: usa sac_test/seguridad_test o "
+            "el servicio MySQL efímero configurado en GitHub Actions."
         )
 
     connection = mysql.connector.connect(
@@ -90,8 +100,9 @@ def integration_test_database():
                 "no se encuentra la tabla de usuarios en la base de seguridad de pruebas"
             )
         pytest.fail(
-            "Prepara las bases de prueba importando "
-            f"db/preparar_integracion_test.sql. {'; '.join(details)}"
+            "Prepara el esquema de integración importando "
+            f"db/integration_test_schema.sql y los procedimientos requeridos. "
+            f"{'; '.join(details)}"
         )
 
 

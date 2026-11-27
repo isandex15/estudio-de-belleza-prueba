@@ -30,7 +30,11 @@ def handle_request(ruta):
 
             nombre_unidad = request.form.get("nombre_unidad")
 
-            validar = modelo.validarNombreUnidad(nombre_unidad)
+            validar = modelo.validarNombreUnidad(
+                nombre_unidad,
+                request.form.get("cod_presentacion"),
+                request.form.get("cod_medida")
+            )
 
             if not validar["status"]:
                 return jsonify(validar)
@@ -61,7 +65,11 @@ def handle_request(ruta):
 
             nombre_unidad = request.form.get("nombre_unidad")
 
-            validar = modelo.validarNombreUnidad(nombre_unidad)
+            validar = modelo.validarNombreUnidad(
+                nombre_unidad,
+                request.form.get("cod_presentacion"),
+                request.form.get("cod_medida")
+            )
 
             if not validar["status"]:
                 return jsonify(validar)

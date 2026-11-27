@@ -36,7 +36,7 @@ def modelo_usuario(monkeypatch):
 # CP-USU-01 (prueba negativa: rechaza el registro de un usuario cuando existen campos obligatorios vacíos)
 def test_validar_usuario_rechaza_campos_obligatorios_vacios(modelo_usuario):
     resultado = modelo_usuario.validarUsuario(
-        "", "", "", "", "", "", ""
+        "", "", "", "", "", "", "", None
     )
 
     assert resultado["status"] is False
@@ -76,6 +76,7 @@ def test_validar_usuario_rechaza_telefono_con_letras(modelo_usuario):
         "Perez",
         "0412ABC4567",
         "Centro",
+        "carlos@gmail.com",
         "Clave123",
         1
     )
@@ -89,7 +90,7 @@ def test_validar_usuario_rechaza_telefono_con_letras(modelo_usuario):
 def test_validar_usuario_rechaza_cedula_con_letras(modelo_usuario):
     resultado = modelo_usuario.validarUsuario(
         "123ABC", "Carlos", "Perez", "04121234567",
-        "Centro", "Clave123", 1
+        "Centro", "carlos@gmail.com", "Clave123", 1
     )
 
     assert resultado["status"] is False
@@ -100,7 +101,7 @@ def test_validar_usuario_rechaza_cedula_con_letras(modelo_usuario):
 def test_validar_usuario_rechaza_nombre_con_numeros(modelo_usuario):
     resultado = modelo_usuario.validarUsuario(
         "12345678", "Carlos123", "Perez", "04121234567",
-        "Centro", "Clave123", 1
+        "Centro", "carlos@gmail.com", "Clave123", 1
     )
 
     assert resultado["status"] is False
@@ -111,7 +112,7 @@ def test_validar_usuario_rechaza_nombre_con_numeros(modelo_usuario):
 def test_validar_usuario_rechaza_apellido_con_numeros(modelo_usuario):
     resultado = modelo_usuario.validarUsuario(
         "12345678", "Carlos", "Perez123", "04121234567",
-        "Centro", "Clave123", 1
+        "Centro", "carlos@gmail.com", "Clave123", 1
     )
 
     assert resultado["status"] is False

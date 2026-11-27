@@ -88,6 +88,7 @@ def test_editar_especialista_correctamente(modelo_especialidad):
 def test_eliminar_especialista_con_reservas_activas(modelo_especialidad):
     mock_cursor = modelo_especialidad.conexion.cursor.return_value
     mock_cursor.fetchone.return_value = {
+        "status": 1,
         "reservas": 2,
         "reservas_activas": 1
     }
@@ -102,6 +103,7 @@ def test_eliminar_especialista_con_reservas_activas(modelo_especialidad):
 def test_eliminar_especialista_sin_reservas(modelo_especialidad):
     mock_cursor = modelo_especialidad.conexion.cursor.return_value
     mock_cursor.fetchone.return_value = {
+        "status": 1,
         "reservas": 0,
         "reservas_activas": 0
     }
@@ -109,5 +111,5 @@ def test_eliminar_especialista_sin_reservas(modelo_especialidad):
 
     resultado = modelo_especialidad.eliminar("12345678")
 
-    assert resultado == "eliminado_fisico"
+    assert resultado == "eliminado"
     modelo_especialidad.conexion.commit.assert_called_once()

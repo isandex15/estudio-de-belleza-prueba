@@ -17,6 +17,8 @@ jobs:
       DB_USER: root
       DB_PASS: ci-root-password
       DB_NAME: sac
+      DB_SEGURIDAD_NAME: seguridad
+      CI_MYSQL_SERVICE: "true"
 
     services:
       mysql:
@@ -45,12 +47,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes default-mysql-client
           python -m pip install --upgrade pip
-          python -m pip install pytest Flask mysql-connector-python python-dotenv requests bcrypt reportlab openpyxl locust
+          python -m pip install pytest Flask mysql-connector-python python-dotenv requests bcrypt captcha reportlab openpyxl locust
 
       - name: Inicializar base de pruebas
         run: |
           mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" < db/integration_test_schema.sql
           mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" < db/procedimientoscompras.sql
+          mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" --database="$DB_NAME" < db/procesos.sql
+          mysql --host="$DB_HOST" --user="$DB_USER" --password="$DB_PASS" --database="$DB_SEGURIDAD_NAME" < db/procesoalmacenado.sql
 
       - name: Ejecutar pruebas de integración
         run: |

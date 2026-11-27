@@ -15,6 +15,15 @@ class UnidadmedidaModelo(Conexion):
     # =====================================
 
     def validarMedida(self, medida):
+        medida = str(medida or "").strip()
+
+        if not medida:
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "La unidad de medida es obligatoria."
+            }
 
         if re.search(r'[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]', medida):
             return {

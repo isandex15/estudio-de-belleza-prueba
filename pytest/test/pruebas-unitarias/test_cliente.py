@@ -112,8 +112,14 @@ def test_eliminar_cliente_con_reservas_activas(monkeypatch, modelo_cliente):
 # CP-CLI-0 - Rechazar cliente con cédula vacía
 def test_validar_cliente_rechaza_cedula_vacia(modelo_cliente):
     resultado = modelo_cliente.validarCliente(
-        "", "Carlos", "Perez", "04121234567",
-        "Centro", "carlos@gmail.com"
+        {
+            "cedula": "",
+            "nombre_usuario": "Carlos",
+            "apellido_usuario": "Perez",
+            "telefono": "04121234567",
+            "direccion": "Centro",
+            "correo": "carlos@gmail.com"
+        }
     )
 
     assert resultado["status"] is False
@@ -124,8 +130,14 @@ def test_validar_cliente_rechaza_cedula_vacia(modelo_cliente):
 # CP-CLI-0 - Rechazar cliente con correo electrónico inválido
 def test_validar_cliente_rechaza_correo_invalido(modelo_cliente):
     resultado = modelo_cliente.validarCliente(
-        "12345678", "Carlos", "Perez", "04121234567",
-        "Centro", "carlosgmail.com"
+        {
+            "cedula": "12345678",
+            "nombre_usuario": "Carlos",
+            "apellido_usuario": "Perez",
+            "telefono": "04121234567",
+            "direccion": "Centro",
+            "correo": "carlosgmail.com"
+        }
     )
 
     assert resultado["status"] is False
@@ -134,8 +146,14 @@ def test_validar_cliente_rechaza_correo_invalido(modelo_cliente):
 # CP-CLI-0 (prueba negativa: rechaza el registro de un cliente sin correo electrónico)
 def test_registrar_cliente_sin_correo(modelo_cliente):
     resultado = modelo_cliente.validarCliente(
-        "3196486", "Carolina", "González", "04141234567",
-        "Caracas", ""
+        {
+            "cedula": "3196486",
+            "nombre_usuario": "Carolina",
+            "apellido_usuario": "González",
+            "telefono": "04141234567",
+            "direccion": "Caracas",
+            "correo": ""
+        }
     )
 
     assert resultado["status"] is False
@@ -146,8 +164,14 @@ def test_registrar_cliente_sin_correo(modelo_cliente):
 # CP-CLI- unitaria - Registrar un cliente sin teléfono
 def test_registrar_cliente_sin_telefono(modelo_cliente):
     resultado = modelo_cliente.validarCliente(
-        "3196486", "Carolina", "González", "",
-        "Caracas", "carolina@gmail.com"
+        {
+            "cedula": "3196486",
+            "nombre_usuario": "Carolina",
+            "apellido_usuario": "González",
+            "telefono": "",
+            "direccion": "Caracas",
+            "correo": "carolina@gmail.com"
+        }
     )
 
     assert resultado["status"] is False

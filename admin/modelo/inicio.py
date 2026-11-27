@@ -1,4 +1,5 @@
 from admin.config.conexion import Conexion
+from datetime import datetime
 
 class InicioModelo(Conexion):
     def __init__(self):
@@ -324,6 +325,20 @@ class InicioModelo(Conexion):
         cod_productos=None,
         descripcion=None
     ):
+        validacion = self.validarReserva(
+            cedula,
+            cod_tipos_servicio,
+            fecha,
+            hora,
+            cedula_especialista,
+            cod_productos=cod_productos
+        )
+        if not validacion["status"]:
+            return {
+                "success": False,
+                "message": validacion["text"]
+            }
+
         try:
             cursor = self.conexion.cursor()
 
@@ -340,7 +355,9 @@ class InicioModelo(Conexion):
             productos = None
             cantidades = None
 
-            if cod_productos:
+            if cod_productos is not None and not isinstance(cod_productos, (list, tuple)):
+                errores.append("La lista de productos no es válida.")
+            elif cod_productos:
                 cod_productos = sorted(
                     cod_productos,
                     key=lambda producto: int(producto["cod_producto"])
@@ -471,6 +488,64 @@ class InicioModelo(Conexion):
                 "success": False,
                 "message": str(e)
             }
+
+    def validarReserva(
+        self,
+        cedula,
+        cod_tipos_servicio,
+        fecha,
+        hora,
+        cedula_especialista,
+        cod_productos=None
+    ):
+        errores = []
+
+        if not str(cedula or "").strip():
+            errores.append("Debe ingresar la cedula de un cliente existente.")
+        elif not str(cedula).strip().isdigit():
+            errores.append("La cédula del cliente solo puede contener números.")
+
+        if not cod_tipos_servicio:
+            errores.append("Debe seleccionar al menos un tipo de servicio.")
+
+        if not str(cedula_especialista or "").strip():
+            errores.append("Debe seleccionar un especialista existente.")
+        elif not str(cedula_especialista).strip().isdigit():
+            errores.append("La cédula del especialista solo puede contener números.")
+
+        if not str(fecha or "").strip():
+            errores.append("Debe ingresar una fecha para la reserva.")
+        else:
+            try:
+                datetime.strptime(str(fecha).strip(), "%Y-%m-%d")
+            except ValueError:
+                errores.append("La fecha de la reserva no es válida.")
+
+        if not str(hora or "").strip():
+            errores.append("Debe ingresar una hora para la reserva.")
+
+        if cod_productos:
+            for producto in cod_productos:
+                try:
+                    cod_producto = int(producto["cod_producto"])
+                    cantidad = int(producto["cantidad"])
+                except (KeyError, TypeError, ValueError):
+                    errores.append("Cada producto debe tener un código y una cantidad válida.")
+                    break
+
+                if cod_producto <= 0 or cantidad <= 0:
+                    errores.append("La cantidad y el código del producto deben ser mayores que cero.")
+                    break
+
+        if errores:
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Datos inválidos",
+                "text": "<br>".join(errores)
+            }
+
+        return {"status": True}
     # ==============================================================
     # GUARDAR STOCK EN JSON
     # ==============================================================

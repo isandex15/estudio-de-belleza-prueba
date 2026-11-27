@@ -1,6 +1,7 @@
 from admin.config.conexion import Conexion
 import datetime
 import re
+import unicodedata
 
 
 # MODELO DE MONEDA
@@ -335,7 +336,12 @@ class MonedaModelo(Conexion):
             actualizadas = 0
             for moneda in monedas:
                 nombre = (moneda.get('nombre_moneda') or '').strip().lower()
-                nombre_limpio = re.sub(r'[^a-záéíóúñ]+', '', nombre)
+                nombre_sin_acentos = unicodedata.normalize("NFKD", nombre)
+                nombre_limpio = re.sub(
+                    r'[^a-z]+',
+                    '',
+                    nombre_sin_acentos.encode("ascii", "ignore").decode("ascii")
+                )
                 if nombre_limpio in {'bcv', 'dolar', 'dolarves', 'usd', 'usdv', 'dolarv'}:
               
                     valor = float(tasa_bcv)
@@ -348,12 +354,12 @@ class MonedaModelo(Conexion):
                     elif tasa_usdt_binance and tasa_usdt_binance > 0:
                         valor = float(tasa_bcv) * float(tasa_usdt_binance)
                     else:
-                        valor = float(tasa_bcv)
+                        continue
                 elif nombre_limpio in {'euro', 'eur', 'euros'}:
                     if eur_usd and tasa_bcv and tasa_bcv > 0:
                         valor = float(tasa_bcv) * eur_usd
                     else:
-                        valor = float(tasa_bcv) * 1.08
+                        continue
                 elif nombre_limpio in {'bolivar', 'bolivares', 'ves', 'bs', 'bsf', 'bss'}:
                     valor = 1.0
                 else:

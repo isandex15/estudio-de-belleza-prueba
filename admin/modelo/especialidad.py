@@ -15,7 +15,23 @@ class EspecialidadModelo(Conexion):
         self.__cedula = None
         self.__status = None
 
-    def validarEspecialidad(self, especialista):
+    def validarEspecialidad(self, especialista, cedula):
+        if not str(cedula or "").strip():
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "Debe seleccionar la cédula del personal."
+            }
+
+        especialista = str(especialista or "").strip()
+        if not especialista:
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "Debe seleccionar una especialidad."
+            }
 
         if re.search(r'\d', especialista):
             return {

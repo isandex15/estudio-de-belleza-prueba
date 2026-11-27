@@ -13,9 +13,32 @@ class UnidadModelo(Conexion):
         self.__status = None
 
 
-    def validarNombreUnidad(self, nombre_unidad):
+    def validarNombreUnidad(self, nombre_unidad, cod_presentacion, cod_medida):
+        if not str(nombre_unidad or "").strip():
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "El nombre de la unidad es obligatorio."
+            }
 
-        if re.search(r'[^0-9]', nombre_unidad):
+        if not str(cod_presentacion or "").strip():
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "La presentación es obligatoria."
+            }
+
+        if not str(cod_medida or "").strip():
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "La medida es obligatoria."
+            }
+
+        if re.search(r'[^0-9]', str(nombre_unidad).strip()):
             return {
                 "status": False,
                 "icon": "warning",

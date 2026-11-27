@@ -79,6 +79,17 @@ CREATE TABLE IF NOT EXISTS bitacora (
     PRIMARY KEY (cod_bitacora)
 ) ENGINE=InnoDB;
 
+CREATE TABLE IF NOT EXISTS mantenimiento (
+    cod_mantenimiento INT NOT NULL AUTO_INCREMENT,
+    nombre_archivo VARCHAR(250) NOT NULL,
+    tamano VARCHAR(20) NOT NULL,
+    fecha DATE NOT NULL,
+    hora TIME NOT NULL,
+    cedula_usuario VARCHAR(12) NOT NULL,
+    PRIMARY KEY (cod_mantenimiento),
+    UNIQUE KEY uq_ci_mantenimiento_archivo (nombre_archivo)
+) ENGINE=InnoDB;
+
 INSERT INTO usuario (cedula, status)
 VALUES ('CI00000001', 1)
 ON DUPLICATE KEY UPDATE status = VALUES(status);
@@ -87,16 +98,34 @@ INSERT INTO usuario (cedula, status)
 VALUES ('4723317', 1)
 ON DUPLICATE KEY UPDATE status = VALUES(status);
 
+INSERT INTO usuario (cedula, nombre_usuario, apellido_usuario, status, cod_rol)
+VALUES
+    ('3123446', 'Especialista', 'CI', 1, 2),
+    ('3196486', 'Cliente', 'CI', 1, 3)
+ON DUPLICATE KEY UPDATE
+    nombre_usuario = VALUES(nombre_usuario),
+    apellido_usuario = VALUES(apellido_usuario),
+    status = VALUES(status),
+    cod_rol = VALUES(cod_rol);
+
 INSERT INTO rol (cod_rol, rol, status)
-VALUES (1, 'administrador', 1)
+VALUES
+    (1, 'administrador', 1),
+    (2, 'empleado', 1),
+    (3, 'cliente', 1)
 ON DUPLICATE KEY UPDATE rol = VALUES(rol), status = VALUES(status);
 
 INSERT INTO acciones (cod_accion, nombre_accion, status)
-VALUES (1, 'registrar', 1)
+VALUES
+    (1, 'registrar', 1),
+    (2, 'editar', 1)
 ON DUPLICATE KEY UPDATE nombre_accion = VALUES(nombre_accion), status = VALUES(status);
 
 INSERT INTO modulos (cod_modulo, nombre_modulo, status)
-VALUES (1, 'compra', 1)
+VALUES
+    (1, 'compra', 1),
+    (2, 'servicio', 1),
+    (3, 'producto', 1)
 ON DUPLICATE KEY UPDATE nombre_modulo = VALUES(nombre_modulo), status = VALUES(status);
 
 INSERT INTO permiso (cod_permiso, status, cod_modulo, cod_accion)
@@ -234,13 +263,107 @@ CREATE TABLE IF NOT EXISTS promocion (
 CREATE TABLE IF NOT EXISTS servicio (
     cod_servicio INT NOT NULL AUTO_INCREMENT,
     cod_promo INT DEFAULT NULL,
+    cedula VARCHAR(12) NOT NULL,
+    descripcion VARCHAR(500) DEFAULT NULL,
+    fecha DATE NOT NULL,
+    hora VARCHAR(20) NOT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    cedula_especialista VARCHAR(12) NOT NULL,
     PRIMARY KEY (cod_servicio)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS especialista (
+    cedula_especialista VARCHAR(12) NOT NULL,
+    especialista VARCHAR(100) NOT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (cedula_especialista)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS disponibilidad_especialista (
+    cod_disponibilidad INT NOT NULL AUTO_INCREMENT,
+    fecha_disponibilidad DATE NOT NULL,
+    hora_disponibilidad VARCHAR(20) NOT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    cedula_especialista VARCHAR(12) NOT NULL,
+    PRIMARY KEY (cod_disponibilidad)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS conteo_stock (
+    cod_conteo INT NOT NULL AUTO_INCREMENT,
+    conteo INT NOT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    cod_producto INT NOT NULL,
+    PRIMARY KEY (cod_conteo)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS detalle_servicio (
     cod_detalle_servicio INT NOT NULL AUTO_INCREMENT,
+    cantidad_servicio VARCHAR(20) NOT NULL DEFAULT '1',
+    cod_servicio INT NOT NULL,
     cod_tipo_servicio INT NOT NULL,
+    cod_producto INT DEFAULT NULL,
     PRIMARY KEY (cod_detalle_servicio)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS pago (
+    cod_pago INT NOT NULL AUTO_INCREMENT,
+    fecha_pago DATE NOT NULL,
+    monto DECIMAL(12,2) NOT NULL,
+    comprobante_pago VARCHAR(300) NOT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    cod_servicio INT NOT NULL,
+    PRIMARY KEY (cod_pago)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS tipo_pago (
+    cod_tipo_pago INT NOT NULL AUTO_INCREMENT,
+    nombre_tipo_pago VARCHAR(100) NOT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (cod_tipo_pago)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS moneda (
+    cod_moneda INT NOT NULL AUTO_INCREMENT,
+    nombre_moneda VARCHAR(100) NOT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (cod_moneda)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS cambio (
+    cod_cambio INT NOT NULL AUTO_INCREMENT,
+    valor DECIMAL(12,4) NOT NULL,
+    fecha DATE NOT NULL,
+    cod_moneda INT NOT NULL,
+    PRIMARY KEY (cod_cambio)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS detalle_pago (
+    cod_detalle_pago INT NOT NULL AUTO_INCREMENT,
+    cantidad VARCHAR(250) NOT NULL,
+    cod_pago INT NOT NULL,
+    cod_tipo_pago INT NOT NULL,
+    cod_moneda INT NOT NULL,
+    PRIMARY KEY (cod_detalle_pago)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS banco (
+    cod_banco INT NOT NULL AUTO_INCREMENT,
+    nombre_banco VARCHAR(100) NOT NULL,
+    PRIMARY KEY (cod_banco)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS pago_personal (
+    cod_pago_personal INT NOT NULL AUTO_INCREMENT,
+    fecha_pago DATE NOT NULL,
+    hora_pago TIME NOT NULL,
+    porcentaje INT NOT NULL,
+    status TINYINT(1) NOT NULL DEFAULT 1,
+    cod_servicio INT NOT NULL,
+    comprobante VARCHAR(250) DEFAULT NULL,
+    cod_banco INT DEFAULT NULL,
+    referencia_pago VARCHAR(100) DEFAULT NULL,
+    PRIMARY KEY (cod_pago_personal),
+    UNIQUE KEY uq_ci_pago_personal_referencia (referencia_pago)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS compra (
@@ -280,7 +403,10 @@ VALUES (1, 'Tipo CI', 1)
 ON DUPLICATE KEY UPDATE nombre_tipo_producto = VALUES(nombre_tipo_producto), status = VALUES(status);
 
 INSERT INTO tipo_servicio (cod_tipo_servicio, nombre_servicio, precio, status)
-VALUES (1, 'Servicio CI', 35.50, 1)
+VALUES
+    (1, 'Servicio CI', 35.50, 1),
+    (2, 'Servicio CI 2', 25.00, 1),
+    (3, 'Servicio CI 3', 15.00, 1)
 ON DUPLICATE KEY UPDATE nombre_servicio = VALUES(nombre_servicio), precio = VALUES(precio), status = VALUES(status);
 
 INSERT INTO presentacion (cod_presentacion, presentacion, status)
@@ -319,3 +445,35 @@ INSERT INTO detalle_producto (
 )
 VALUES ('2030-01-01', 1, 1)
 ON DUPLICATE KEY UPDATE cod_tipo_producto = VALUES(cod_tipo_producto);
+
+INSERT INTO especialista (cedula_especialista, especialista, status)
+VALUES ('3123446', 'Especialista CI', 1)
+ON DUPLICATE KEY UPDATE especialista = VALUES(especialista), status = VALUES(status);
+
+INSERT INTO conteo_stock (conteo, status, cod_producto)
+VALUES (1, 1, 1);
+
+INSERT INTO servicio (
+    cod_servicio, cedula, descripcion, fecha, hora, status, cedula_especialista
+)
+VALUES (
+    1, '3196486', 'Reserva CI', CURRENT_DATE, '08:00 AM', 1, '3123446'
+);
+
+INSERT INTO detalle_servicio (
+    cantidad_servicio, cod_servicio, cod_tipo_servicio, cod_producto
+)
+VALUES ('1', 1, 1, NULL);
+
+INSERT INTO disponibilidad_especialista (
+    fecha_disponibilidad, hora_disponibilidad, status, cedula_especialista
+)
+VALUES (CURRENT_DATE, '08:00 AM', 1, '3123446');
+
+INSERT INTO tipo_pago (cod_tipo_pago, nombre_tipo_pago, status)
+VALUES (1, 'Efectivo CI', 1)
+ON DUPLICATE KEY UPDATE nombre_tipo_pago = VALUES(nombre_tipo_pago), status = VALUES(status);
+
+INSERT INTO moneda (cod_moneda, nombre_moneda, status)
+VALUES (1, 'Dolar CI', 1)
+ON DUPLICATE KEY UPDATE nombre_moneda = VALUES(nombre_moneda), status = VALUES(status);

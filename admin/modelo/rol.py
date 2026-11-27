@@ -12,6 +12,15 @@ class RolModelo(Conexion):
 
 
     def validarRol(self, rol):
+        rol = str(rol or "").strip()
+
+        if not rol:
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "El rol es obligatorio."
+            }
 
         if re.search(r'[^A-Za-zÁÉÍÓÚáéíóúÑñÜü]', rol):
             return {

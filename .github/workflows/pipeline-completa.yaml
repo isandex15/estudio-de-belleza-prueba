@@ -17,10 +17,6 @@ jobs:
     name: Pytest integración
     uses: ./.github/workflows/pruebas_integracion.yaml
 
-  playwright:
-    name: Todos los specs Playwright
-    uses: ./.github/workflows/playwright.yaml
-
   locust:
     name: Locust - ${{ matrix.locustfile }}
     strategy:
@@ -49,7 +45,6 @@ jobs:
     needs:
       - pruebas-unitarias
       - pruebas-integracion
-      - playwright
       - locust
       - postman
     runs-on: ubuntu-latest

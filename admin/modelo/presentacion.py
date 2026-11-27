@@ -1,4 +1,5 @@
 from admin.config.conexion import Conexion
+import re
 
 
 class PresentacionModelo(Conexion):
@@ -9,6 +10,27 @@ class PresentacionModelo(Conexion):
         self.__cod_presentacion = None
         self.__presentacion = None
         self.__status = None
+
+    def validarPresentacion(self, presentacion):
+        presentacion = str(presentacion or "").strip()
+
+        if not presentacion:
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "La presentación es obligatoria."
+            }
+
+        if re.search(r"[^A-Za-zÁÉÍÓÚáéíóúÑñÜü\s]", presentacion):
+            return {
+                "status": False,
+                "icon": "warning",
+                "title": "Dato inválido",
+                "text": "La presentación no puede contener números ni caracteres especiales."
+            }
+
+        return {"status": True}
 
     # =====================================
     # GETTERS Y SETTERS

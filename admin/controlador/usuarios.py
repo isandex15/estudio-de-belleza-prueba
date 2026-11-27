@@ -35,7 +35,8 @@ def handle_request(ruta):
                 request.form.get("telefono"),
                 request.form.get("direccion"),
                 request.form.get("correo"),
-                request.form.get("password")
+                request.form.get("password"),
+                request.form.get("cod_rol")
             )
 
             if not validar["status"]:

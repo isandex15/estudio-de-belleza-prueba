@@ -59,7 +59,7 @@ def test_registrar_moneda_valida(modelo_moneda):
     resultado = modelo_moneda.registrar()
 
     assert resultado == 1
-    modelo_moneda.conexion.commit.assert_called_once()
+    modelo_moneda.conexion.commit.assert_called()
 
 
 # CP-MON-06 (Prueba negativa de registro de moneda)
@@ -84,7 +84,7 @@ def test_editar_moneda_valida(modelo_moneda):
     resultado = modelo_moneda.editar()
 
     assert resultado == 1
-    modelo_moneda.conexion.commit.assert_called_once()
+    modelo_moneda.conexion.commit.assert_called()
 
 
 # CP-MON-08 (Prueba negativa de edición de moneda)

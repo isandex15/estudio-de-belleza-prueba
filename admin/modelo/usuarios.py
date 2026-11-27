@@ -25,11 +25,35 @@ class UsuariosModelo(Conexion):
 
  
 
-    def validarUsuario(self, cedula, nombre, apellido, telefono, direccion, correo, password):
+    def validarUsuario(
+        self, cedula, nombre, apellido, telefono, direccion, correo, password,
+        cod_rol=None
+    ):
 
         errores = []
+        campos_obligatorios = (
+            (cedula, "La cédula es obligatoria."),
+            (nombre, "El nombre es obligatorio."),
+            (apellido, "El apellido es obligatorio."),
+            (telefono, "El teléfono es obligatorio."),
+            (direccion, "La dirección es obligatoria."),
+            (correo, "El correo electrónico es obligatorio."),
+            (password, "La contraseña es obligatoria."),
+        )
+        for valor, mensaje in campos_obligatorios:
+            if not str(valor or "").strip():
+                errores.append(f"• {mensaje}")
+
+        if not str(cod_rol or "").strip():
+            errores.append("• Debe seleccionar un rol.")
 
         # Cédula: solo números
+        cedula = str(cedula or "").strip()
+        nombre = str(nombre or "").strip()
+        apellido = str(apellido or "").strip()
+        telefono = str(telefono or "").strip()
+        correo = str(correo or "").strip()
+
         if cedula and not cedula.isdigit():
             errores.append("• La cédula solo puede contener números.")
 
